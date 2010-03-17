@@ -122,10 +122,10 @@ if ($start_date && $end_date) {
 			$min_d_start = $d_start;
 			$max_d_end = $d_end;
 		} else {
-			if (Date::compare($min_d_start, $d_start) > 0) {
+			if (CDate::compare($min_d_start, $d_start) > 0) {
 				$min_d_start = $d_start;
 			}
-			if (Date::compare($max_d_end, $d_end) < 0) {
+			if (CDate::compare($max_d_end, $d_end) < 0) {
 				$max_d_end = $d_end;
 			}
 		}

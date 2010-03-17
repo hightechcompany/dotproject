@@ -140,7 +140,7 @@ for ($i=0; $i < 7; $i++) {
 	$day_string = trim('<strong>' 
 	                   . htmlentities($show_day->format('%d'), ENT_COMPAT, $locale_char_set) 
 	                   . '</strong>');
-	$day_name = trim(htmlentities($show_day->format("%A"), ENT_COMPAT, $locale_char_set));
+	$day_name = trim(htmlentities($AppUI->_($show_day->format("%A")), ENT_COMPAT, $locale_char_set));
 	$s .= trim(($column == 0) ? ($day_string . ' ' . $day_name) : ($day_name . ' ' . $day_string));
 	
 	$s .= (($dayStamp == $today) ? '</span>' : '');

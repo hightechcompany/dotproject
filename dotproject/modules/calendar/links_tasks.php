@@ -28,13 +28,13 @@ function getTaskLinks($startPeriod, $endPeriod, &$links, $strMaxLen, $company_id
 		// the link
 		$link['href'] = ('?m=tasks&a=view&task_id=' . $row['task_id']);
 		$link['alt'] = ($row['project_name'] . ":\n" . $row['task_name']);
-		
+
 		// the link text
 		if (mb_strlen($row['task_name']) > $strMaxLen) {
 			$row['task_name'] = (mb_substr($row['task_name'], 0, $strMaxLen) . '...');
 		}
 		$link['text'] = ($row['task_name']);
-		$link['style'] = ('color:' . bestColor($row['color']) 
+		$link['style'] = ('color:' . bestColor($row['color'])
 						  . ';background-color:#' . $row['color']);
 
 		// determine which day(s) to display the task
@@ -42,20 +42,20 @@ function getTaskLinks($startPeriod, $endPeriod, &$links, $strMaxLen, $company_id
 		$end = $row['task_end_date'] ? new CDate($row['task_end_date']) : null;
 		$durn = $row['task_duration'];
 		$durnType = $row['task_duration_type'];
-		
-		if (($start->after($startPeriod) || $start->equals($startPeriod)) 
+
+		if (($start->after($startPeriod) || $start->equals($startPeriod))
 		    && ($start->before($endPeriod) || $start->equals($endPeriod))) {
 			$temp = $link;
-			$temp['alt'] = ('START [' . $row['task_duration'] . ' ' 
-			                . $AppUI->_($durnTypes[$row['task_duration_type']]) . "]\n" 
+			$temp['alt'] = ('START [' . $row['task_duration'] . ' '
+			                . $AppUI->_($durnTypes[$row['task_duration_type']]) . "]\n"
 			                . $link['alt']);
 			if ($a != 'day_view') {
 				$temp['text'] = (dPshowImage(dPfindImage('block-start-16.png')) . $temp['text']);
 			}
 			$links[$start->format(FMT_TIMESTAMP_DATE)][] = $temp;
 		}
-		if ($end && $start->before($end) 
-			&& ($end->after($startPeriod) || $end->equals($startPeriod)) 
+		if ($end && $start->before($end)
+			&& ($end->after($startPeriod) || $end->equals($startPeriod))
 			|| ($end->before($endPeriod) || $end->equals($endPeriod))) {
 			$temp = $link;
 			$temp['alt'] = ("FINISH\n" . $link['alt']);
@@ -81,20 +81,20 @@ function getTaskLinks($startPeriod, $endPeriod, &$links, $strMaxLen, $company_id
 		// business days are not taken into account
 		$target = $start;
 		$target->addSeconds($durn*$sid);
-		
-		if (Date::compare($target, $startPeriod) < 0) {
+
+		if (CDate::compare($target, $startPeriod) < 0) {
 			continue;
 		}
-		if (Date::compare($start, $startPeriod) > 0) {
+		if (CDate::compare($start, $startPeriod) > 0) {
 			$temp = $start;
 			$temp->addSeconds($sid);
 		} else {
 			$temp = $startPeriod;
 		}
-		
+
 		// Optimised for speed, AJD.
-		while (Date::compare($endPeriod, $temp) > 0 
-		       && Date::compare($target, $temp) > 0
+		while (CDate::compare($endPeriod, $temp) > 0
+		       && CDate::compare($target, $temp) > 0
 		       && ($end == null || $temp->before($end))) {
 			$links[$temp->format(FMT_TIMESTAMP_DATE)][] = $link;
 			$temp->addSeconds($sid);

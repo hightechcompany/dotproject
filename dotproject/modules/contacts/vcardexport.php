@@ -26,7 +26,7 @@ if (isset($_GET['contact_id']) && !($_GET['contact_id']=='')) {
 
 
 	// include PEAR vCard class
-	require_once($AppUI->getLibraryClass('PEAR/Contact_Vcard_Build'));
+	require_once('Contact_Vcard_Build.php');
 
 	// instantiate a builder object
 	// (defaults to version 3.0)

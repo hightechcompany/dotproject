@@ -8,7 +8,7 @@ if (!defined('DP_BASE_DIR')) {
 }
 
 
-require_once $AppUI->getLibraryClass('PEAR/Date');
+require_once 'Date.php';
 
 define('FMT_DATEISO', '%Y%m%dT%H%M%S');
 define('FMT_DATELDAP', '%Y%m%d%H%M%SZ');
@@ -72,9 +72,11 @@ class CDate extends Date {
 	function compare($d1, $d2, $convertTZ=false)
 	{
 		if (!is_object($d1)) {
-			$d1 = new CDate($d1);
-		} else if (!is_object($d2)) {
-			$d2 = new CDate($d2);
+			$d1 = new Date($d1);
+		}
+
+		if (!is_object($d2)) {
+			$d2 = new Date($d2);
 		}
 		if ($convertTZ) {
 			$d1->convertTZ(new Date_TimeZone('UTC'));
@@ -94,6 +96,10 @@ class CDate extends Date {
 			$comp_value = dPsgn($d1->second - $d2->second);
 		} 
 		return dPsgn($comp_value);
+	}
+
+	function after($date) {
+		return parent::after(new Date($date));
 	}
 
 

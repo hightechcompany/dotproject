@@ -13,7 +13,7 @@ if (isset($_FILES['vcf']) && isset($_GET['suppressHeaders']) && ($_GET['suppress
 
 	$vcf = $_FILES['vcf'];
 	// include PEAR vCard class
-	require_once($AppUI->getLibraryClass('PEAR/Contact_Vcard_Parse'));
+	require_once('Contact_Vcard_Parse.php');
 
 	if (is_uploaded_file($vcf['tmp_name'])) {
 
