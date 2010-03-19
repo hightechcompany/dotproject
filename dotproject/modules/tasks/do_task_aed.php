@@ -63,6 +63,9 @@ if ($sub_form) {
 		$AppUI->redirect();
 	}
 	
+	$obj->task_start_date = mktime(substr($obj->task_start_date, 8, 2), substr($obj->task_start_date, 10, 2), '00', substr($obj->task_start_date, 4, 2), substr($obj->task_start_date, 6, 2), substr($obj->task_start_date, 0, 4));
+	$obj->task_end_date = mktime(substr($obj->task_end_date, 8, 2), substr($obj->task_end_date, 10, 2), '00', substr($obj->task_end_date, 4, 2), substr($obj->task_end_date, 6, 2), substr($obj->task_end_date, 0, 4));
+
 	if (!($obj->task_owner)) {
 		$obj->task_owner = $AppUI->user_id;
 	}
