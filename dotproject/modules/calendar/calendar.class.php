@@ -314,9 +314,15 @@ class CMonthCalendar {
 			}
 			
 			foreach ($week as $day) {
-				$y = intval(mb_substr($day, 0, 4));
-				$m = intval(mb_substr($day, 4, 2));
-				$d = intval(mb_substr($day, 6, 2));
+				$y = mb_substr($day, 0, 4);
+				$m = mb_substr($day, 4, 2);
+				$d = mb_substr($day, 6, 2);
+				$this_day = new CDate("$y-$m-$d");
+
+				$y = intval($y);
+				$m = intval($m);
+				$d = intval($d);
+
 				$dow = intval(mb_substr($day, 8, 1));
 				
 				if ($m != $this_month) {
