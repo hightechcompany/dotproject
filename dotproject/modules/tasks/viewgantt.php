@@ -220,6 +220,8 @@ function setCalendar(idate, fdate) {
 	fld_fdate = eval("document.editFrm.show_" + calendarField);
 	fld_date.value = idate;
 	fld_fdate.value = fdate;
+
+	document.editFrm.display_option.value="custom";
 }
 function scrollPrev() {
 	f = document.editFrm;
@@ -278,11 +280,6 @@ function toggleLayer( whichLayer ) {
 		vis.display = (vis.display==''||vis.display=='block')?'none':'block';
 }
 function printPDF() {
-	document.editFrm.printpdf.value = "1";
-	document.editFrm.printpdfhr.value = "0";
-	document.editFrm.submit();
-}
-function printPDFHR() {
 	document.editFrm.printpdf.value = "0";
 	document.editFrm.printpdfhr.value = "1";
 	document.editFrm.submit();
@@ -309,7 +306,7 @@ function doMenu(item) {
 
 <?php ////////////////////// New checkboxes with additional formatting go here, this is with the view of displaying the options in an ajax box in the future /////////////////////////// -->
 ?>
-<div id="displayOptions"> <!-- start of div used to show/hide formatting options -->
+<div id="displayOptions" style="text-align: center;"> <!-- start of div used to show/hide formatting options -->
 <br />
 <form name="editFrm" method="post" action="?<?php
 echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' . $project_id); ?>">
@@ -317,67 +314,46 @@ echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' .
 <input type="hidden" name="printpdf" value="<?php echo $printpdf; ?>" />
 <input type="hidden" name="printpdfhr" value="<?php echo $printpdfhr; ?>" />
 <input type="hidden" name="caller" value="<?php echo $a; ?>" />
+<table border="0" cellpadding="2" cellspacing="0" width="80%" class="tbl" style="margin: 0px auto;">
+  <tr><th><?php echo $AppUI->_('Date'); ?></th></tr>
+  <tr>
+    <td style="text-align: center;">
+       <div style="text-align: center; margin: 10px auto;">
+         <input type="button" style="width: 160px; margin-right: 20px;" class="button" value="<?php echo $AppUI->_('show this month');?>" onclick='javascript:showThisMonth()' />
+         <input type="button" style="width: 160px;" class="button" value="<?php echo $AppUI->_('show full project');?>" onclick='javascript:showFullProject()' />
+       </div>
+       <div style="text-align: center; margin: 10px auto;">
+       <?php if ($display_option != "all") { ?>
+           <a href="javascript:scrollPrev()">
+	      <img src="./images/prev.gif" width="16" height="16" alt="<?php echo $AppUI->_('previous');?>" border="0" />
+	   </a>
+       <?php }
+
+       echo $AppUI->_('From');?>:
+       <input type="hidden" name="sdate" value="<?php echo $start_date->format(FMT_TIMESTAMP_DATE);?>" />
+       <input type="text" class="text" name="show_sdate" value="<?php echo $start_date->format($df);?>" size="12" disabled="disabled" />
+       <a href="javascript:popCalendar('sdate')">
+	 <img src="./images/calendar.gif" width="24" height="12" alt="" border="0" />
+       </a>
+
+	<?php echo $AppUI->_('To');?>:
+       <input type="hidden" name="edate" value="<?php echo $end_date->format(FMT_TIMESTAMP_DATE);?>" />
+       <input type="text" class="text" name="show_edate" value="<?php echo $end_date->format($df);?>" size="12" disabled="disabled" />
+       <a href="javascript:popCalendar('edate')">
+         <img src="./images/calendar.gif" width="24" height="12" alt="" border="0" />
+       </a>
+
+      <?php if ($display_option != "all") { ?>
+        <a href="javascript:scrollNext()">
+	   <img src="./images/next.gif" width="16" height="16" alt="<?php echo $AppUI->_('next');?>" border="0" />
+	</a>
+      <?php } ?>
+      </div>
+    </td>
+  </tr>
+</table>
+<br />
 <table border="0" align="center" class="tbl" border="0" cellpadding="2" cellspacing="0" style="min-width:990px">
-<tr> <!--  Date selection options go in this row -->
-	<td align="right"><em>Date Filter:</em></td>
-	<td align="right">
-		<table border="0" cellpadding="4" cellspacing="0">
-		<tr>
-			<td align="left" valign="top" width="20">
-				<?php if ($display_option != "all") { ?>
-				<a href="javascript:scrollPrev()">
-					<img src="./images/prev.gif" width="16" height="16" alt="<?php echo $AppUI->_('previous');?>" border="0" />
-				</a>
-				<?php } ?>
-			</td>
-
-			<td align="right" nowrap="nowrap"><?php echo $AppUI->_('From');?>:</td>
-			<td align="left" nowrap="nowrap">
-				<input type="hidden" name="sdate" value="<?php echo $start_date->format(FMT_TIMESTAMP_DATE);?>" />
-				<input type="text" class="text" name="show_sdate" value="<?php echo $start_date->format($df);?>" size="12" disabled="disabled" />
-				<a href="javascript:popCalendar('sdate')">
-					<img src="./images/calendar.gif" width="24" height="12" alt="" border="0" />
-				</a>
-			</td>
-
-			<td align="right" nowrap="nowrap"><?php echo $AppUI->_('To');?>:</td>
-			<td align="left" nowrap="nowrap">
-				<input type="hidden" name="edate" value="<?php echo $end_date->format(FMT_TIMESTAMP_DATE);?>" />
-				<input type="text" class="text" name="show_edate" value="<?php echo $end_date->format($df);?>" size="12" disabled="disabled" />
-				<a href="javascript:popCalendar('edate')">
-					<img src="./images/calendar.gif" width="24" height="12" alt="" border="0" />
-				</a>
-			</td>
-			<td align="left">
-				<input type="button" class="button" value="<?php echo $AppUI->_('submit custom date');?>" onclick='document.editFrm.display_option.value="custom";document.editFrm.printpdf.value="0";submit();'/>
-			</td>
-
-			<td align="right" valign="top" width="20">
-				<?php if ($display_option != "all") { ?>
-				<a href="javascript:scrollNext()">
-					<img src="./images/next.gif" width="16" height="16" alt="<?php echo $AppUI->_('next');?>" border="0" />
-				</a>
-				<?php } ?>
-			</td>
-		</tr>
-		</table>
-	</td>
-	<td align="right"><em>Quick Date Filter:</em></td>
-	<td align="right">
-		<table border="0" cellpadding="0" cellspacing="0">
-		<tr>
-			<td align="right">
-				<input type="button" style="width: 110px;" class="button" value="<?php echo $AppUI->_('show this month');?>" onclick='javascript:showThisMonth()' />
-			&nbsp;</td>
-			<td align="right">
-				<input type="button" style="width: 110px;" class="button" value="<?php echo $AppUI->_('show full project');?>" onclick='javascript:showFullProject()' />
-			&nbsp;</td>
-		</tr>
-		</table>
-	</td>
-
-</tr>
-
 <tr> <!--  Task selection options plus Print to PDF go in this row -->
 	<td align="right"><em>Task Filter:</em></td>
 <!--  task filter  -->
@@ -413,10 +389,7 @@ echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' .
 		<table border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td align="right">
-				<input type="button" style="width: 110px;" class="button" value="<?php echo $AppUI->_('low resolution');?>" onclick='javascript:printPDF()' />
-			&nbsp;</td>
-			<td align="right">
-				<input type="button" style="width: 110px;" class="button" value="<?php echo $AppUI->_('high resolution');?>" onclick='javascript:printPDFHR()' />
+				<input type="button" style="width: 110px;" class="button" value="<?php echo $AppUI->_('high resolution');?>" onclick='javascript:printPDF()' />
 			&nbsp;</td>
 		</tr>
 		</table>
