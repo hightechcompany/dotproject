@@ -212,11 +212,8 @@ echo $row['project_company']; ?>" title="<?php echo htmlspecialchars($row['compa
 	</td>
 	<td width="100%">
 		<a href="?m=projects&amp;a=view&amp;project_id=<?php 
-echo ($row['project_id']); ?>" onmouseover="return overlib('<?php 
-echo htmlspecialchars(('<div><p>' . str_replace(array("\r\n", "\n", "\r"), '</p><p>', 
-                                                addslashes($row['project_description'])) 
-                       . '</p></div>'), ENT_QUOTES); 
-?>', CAPTION, '<?php echo $AppUI->_('Description'); ?>', CENTER);" onmouseout="nd();">
+echo ($row['project_id']); ?>" title="<?php echo $AppUI->_('Description'); ?> :: <?php
+echo str_replace(array("\r\n", "\n", "\r"), '<br />', addslashes($row['project_description'])); ?>" class="tips">
 		<?php echo htmlspecialchars($row['project_name'], ENT_QUOTES); ?>
 		</a>
 	</td>

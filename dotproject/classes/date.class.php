@@ -170,8 +170,13 @@ class CDate extends Date {
 	}
 	
 	function isWorkingDay() {
-		global $AppUI;
-		
+	        global $AppUI, $baseDir;
+		require_once $baseDir."/modules/holiday/holiday_func.php";
+		if (isHoliday($this))
+		{
+		  return 0;
+		}
+
 		$working_days = dPgetConfig("cal_working_days");
 		$working_days = ((is_null($working_days)) ? array('1','2','3','4','5') : explode(",", $working_days));
 		return in_array($this->getDayOfWeek(), $working_days);

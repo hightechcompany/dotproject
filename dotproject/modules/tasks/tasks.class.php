@@ -2427,11 +2427,7 @@ function showtask(&$a, $level=0, $is_opened = true, $today_view = false, $hideOp
 	$alt = str_replace("\n", ' ', $alt);
 	*/
 	$alt = ((!empty($a['task_description']))
-			? ('onmouseover="return overlib(' . "'" 
-			   . htmlspecialchars('<div><p>' . str_replace(array("\r\n", "\n", "\r"), '</p><p>', 
-														   addslashes($a['task_description']))
-								  , ENT_QUOTES) . '</p></div>' . "', CAPTION, '" 
-			   . $AppUI->_('Description') . "'" . ', CENTER);" onmouseout="nd();"')
+			? ('title="' . str_replace(array("\r\n", "\n", "\r"), '<br />', addslashes($a['task_description'])) . '" class="tips"')
 			: ' ');
 	
 	if ($a['task_milestone'] > 0) {

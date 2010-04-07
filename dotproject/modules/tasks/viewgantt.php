@@ -384,12 +384,11 @@ echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' .
 		<td align="right" valign="top" width="20">
 		&nbsp;</td></tr></table>
 	</td>
-	<td align="right"><em>Print to PDF:</em></td>
 	<td align="right">
 		<table border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td align="right">
-				<input type="button" style="width: 110px;" class="button" value="<?php echo $AppUI->_('high resolution');?>" onclick='javascript:printPDF()' />
+
 			&nbsp;</td>
 		</tr>
 		</table>
@@ -400,6 +399,10 @@ echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' .
 <?php /* <tr align="left"> <!--  Additional Gantt FOrmatting options go in this row. (show/hide behaviour) -->
 	<th colspan="4" align="left"><em><a style="color: white" href="javascript:doMenu('ganttoptions')" id="xganttoptions">Show Additional Gantt Options</a></em></th>
 </tr> */ ?>
+<table border="0" cellpadding="2" cellspacing="0" width="80%" class="tbl" style="margin: 0px auto;">
+  <tr><th><?php echo $AppUI->_('Tasks'); ?></th></tr>
+  <tr>
+  </tr>
 <tr align="left">
 	<td colspan="4">
 	<table border="0" id="ganttoptions" width="100%" align="center"><tr><td width="100%">
@@ -463,7 +466,6 @@ echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' .
 <!--				<label for="showWork_days"><?php //echo $AppUI->_('Show work instead of duration (Days)'); ?></label>-->
 				</td>
 				<td class="alternate" align="right">
-					<input type="button" style="width: 110px;" class="button" value="<?php echo $AppUI->_('submit');?>" onclick='javascript:submitIt()' />
 				</td>
 			</tr>
 
@@ -497,8 +499,20 @@ echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' .
 		<?php } ?>
 	</table></td></tr></table>
 </td></tr>
-
 </table>
+
+
+<table border="0" cellpadding="2" cellspacing="0" width="80%" class="tbl" style="margin: 0px auto;">
+  <tr>
+      <td style="text-align: right; padding-right: 10px;">
+          <input type="button" style="width: 110px;" class="button" value="<?php echo $AppUI->_('Refresh');?>" onclick='javascript:submitIt()' />
+      </td>
+      <td style="text-align: left; padding-left: 10px;">
+          <input type="button" style="width: 110px;" class="button" value="<?php echo $AppUI->_('Print PDF');?>" onclick='javascript:printPDF()' />
+      </td>
+  </tr>
+</table>
+
 </form>
 </div> <!-- end of div used to show/hide formatting options -->
 <br />
