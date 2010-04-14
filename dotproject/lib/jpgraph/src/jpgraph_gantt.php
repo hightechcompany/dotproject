@@ -2822,7 +2822,7 @@ class GanttScale {
             if( $monthwidth >= 1.2*$img->GetTextWidth($monthName) ) {
                 $img->SetColor($this->month->iTextColor);
                 $img->StrokeText(round($xt+$monthwidth/2+1),
-                round($yb-$this->month->iTitleVertMargin),
+                round($yb-1-$this->month->iTitleVertMargin),
                 $monthName);
             }
             $x = $xt + $monthwidth;
@@ -2844,7 +2844,7 @@ class GanttScale {
                 if( $w >= 1.2*$img->GetTextWidth($monthName) ) {
                     $img->SetColor($this->month->iTextColor);
                     $img->StrokeText(round($x+$w/2+1),
-                    round($yb-$this->month->iTitleVertMargin),$monthName);
+                    round($yb+$img->GetTextHeight($monthName)-13-$this->month->iTitleVertMargin),$monthName);
                 }
                 $x += $monthwidth;
             }
