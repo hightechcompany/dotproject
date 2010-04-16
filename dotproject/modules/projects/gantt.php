@@ -121,7 +121,7 @@ $graph->scale->week->SetStyle(WEEKSTYLE_FIRSTDAY);
 $pLocale = setlocale(LC_TIME, 0); // get current locale for LC_TIME
 $res = @setlocale(LC_TIME, $AppUI->user_lang[0]);
 if ($res) { // Setting locale doesn't fail
-	$graph->scale->SetDateLocale($AppUI->user_lang[0]);
+	$graph->scale->SetDateLocale($AppUI->user_lang[2]);
 }
 setlocale(LC_TIME, $pLocale);
 
@@ -189,9 +189,26 @@ if ($start_date && $end_date) {
 // check day_diff and modify Headers
 $day_diff = $max_d_end->dateDiff($min_d_start);
 
-if ($day_diff > 240) {
-	//more than 240 days
+if ($day_diff > 1096) {
+	//more than 3 years, show only the year scale
+	$graph->ShowHeaders(GANTT_HYEAR);
+	$graph->scale->year->grid->Show ();
+	$graph->scale->year->grid->SetStyle (longdashed);
+	$graph->scale->year->grid->SetColor ('lightgray');
+} else if ($day_diff > 480) {
+	//more than 480 days show only the firstletter of the month
 	$graph->ShowHeaders(GANTT_HYEAR | GANTT_HMONTH);
+	$graph->scale->month->SetStyle(MONTHSTYLE_FIRSTLETTER);
+	$graph->scale->month->grid->Show ();
+	$graph->scale->month->grid->SetStyle (longdashed);
+	$graph->scale->month->grid->SetColor ('lightgray');
+} else if($day_diff > 240) {
+	//more than 240 days and less than 481 show the month short name eg: Jan
+	$graph->ShowHeaders(GANTT_HYEAR | GANTT_HMONTH);
+	$graph->scale->month->SetStyle(MONTHSTYLE_SHORTNAME);
+	$graph->scale->month->grid->Show ();
+	$graph->scale->month->grid->SetStyle (longdashed);
+	$graph->scale->month->grid->SetColor ('lightgray');
 } else if ($day_diff > 90) {
 	//more than 90 days and less of 241
 	$graph->ShowHeaders(GANTT_HYEAR | GANTT_HMONTH | GANTT_HWEEK);
@@ -259,10 +276,11 @@ if (is_array($projects)) {
 		$actual_end = (($p['project_actual_end_date']) ? $p['project_actual_end_date'] : $end);
 		
 		$actual_enddate = new CDate($actual_end);
-		$actual_enddate = $actual_enddate->after($startdate) ? $actual_enddate : $enddate;
+		$actual_enddate = (($actual_end != '0000-00-00 00:00:00') && $actual_enddate->after($startdate)) ? $actual_enddate : $enddate;
+
         $bar = new GanttBar($row++, array($name, $startdate->format($df), $enddate->format($df), 
 		                                  $actual_enddate->format($df)), 
-		                    $start, $actual_end, $cap, 0.6);
+			    $start, $actual_enddate->format($df), $cap, 0.6);
         $bar->progress->Set(min(($progress/100), 1));
 		
         if (is_file(TTF_DIR."FreeSans.ttf")) {

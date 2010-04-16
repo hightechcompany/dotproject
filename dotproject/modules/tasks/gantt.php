@@ -23,7 +23,7 @@ function strUTF8Decode($text) {
 		$encoding = mb_detect_encoding($text.' ');
 	}
 	if (function_exists('iconv')){
-		$text = mb_convert_encoding($text, 'UTF-8', $encoding);
+		$text = mb_convert_encoding($text, 'latin1', $encoding);
 		//iconv($encoding, 'UTF-8', $text);
 	} elseif (function_exists('utf8_decode')) {
 		$text = utf8_decode($text);
@@ -296,8 +296,8 @@ $pLocale = setlocale(LC_TIME, 0); // get current locale for LC_TIME
 //$res = @setlocale(LC_TIME, $AppUI->user_lang[2]);
 $res = @setlocale(LC_TIME, $AppUI->user_lang[0]);
 if ($res) { // Setting locale doesn't fail
-//	$graph->scale->SetDateLocale($AppUI->user_lang[2]);
-	$graph->scale->SetDateLocale($AppUI->user_lang[0]);
+	$graph->scale->SetDateLocale($AppUI->user_lang[2]);
+//	$graph->scale->SetDateLocale($AppUI->user_lang[0]);
 }
 setlocale(LC_TIME, $pLocale);
 
