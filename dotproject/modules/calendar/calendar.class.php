@@ -332,14 +332,7 @@ class CMonthCalendar {
 				} else if ($dow == 0 || $dow == 6) {
 					$class = 'weekend';
 				} else {
-				        global $baseDir;
-				        require_once $baseDir."/modules/holiday/holiday_func.php";
-					if (isHoliday($this_day)) {
-					      $class = 'holiday';
-					}
-					else {
-					      $class = 'day';
-					}
+				        $class = 'day';
 				}
 				$day = mb_substr($day, 0, 8);
 				$this_day = new CDate($day);
