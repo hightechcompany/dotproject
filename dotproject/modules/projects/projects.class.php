@@ -626,7 +626,7 @@ function projects_list_data($user_id=false) {
 	if ($addProjectsWithAssignedTasks) {
 		$q->addJoin('tasks_users', 'tu', 'p.project_id = tu.task_project');
 	}
-	if (isset($project_status) && $currentTabId != 500) {
+	if (isset($project_status) && $currentTabId != 500 && $currentTabId > 0) {
 		$q->addWhere('p.project_status = '.$project_status);
 	}
 	if (isset($department)) {
