@@ -15,7 +15,7 @@ require_once('jpgraph_plotmark.inc.php');
 
 // Maximum size for Automatic Gantt chart
 define('MAX_GANTTIMG_SIZE_W',8000);
-define('MAX_GANTTIMG_SIZE_H',5000);
+DEFINE('MAX_GANTTIMG_SIZE_H',300000);
 
 // Scale Header types
 define("GANTT_HDAY",1);
