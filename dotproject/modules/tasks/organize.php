@@ -30,6 +30,9 @@ $canEdit = getPermission($m, 'edit');
 $action = dPgetParam($_POST, 'action', 99);
 $selected = dPgetParam($_POST, 'selected', 0);
 
+$priorities = dPgetSysVal('TaskPriority');
+$durnTypes = dPgetSysVal('TaskDurationType');
+
 if ($selected && count($selected)) {
 	$new_task = dPgetParam($_POST, 'new_task', -1);
 	$new_project = dPgetParam($_POST, 'new_project', $project_id);
@@ -86,7 +89,7 @@ if ($selected && count($selected)) {
 				$t2 = $t->copy($new_project, $new_task);
 			}
 			$t2->store();
-		} else if ($action > -2 && $action < 2) {
+		} else if (is_numeric($action) && isset($priorities[$action])) {
 			//set priority
 			$t->task_priority = $action;
 			$t->store();
@@ -128,9 +131,6 @@ $q->addGroup('t.task_id');
 $q->addOrder($sort . ', t.task_priority DESC');
 //echo ('<pre>' . $q->prepare(); . '</pre>');
 $tasks = $q->loadList();
-
-$priorities = array('1' => 'high', '0' => 'normal', '-1' => 'low');
-$durnTypes = dPgetSysVal('TaskDurationType');
 
 if (!@$min_view) {
 	$titleBlock = new CTitleBlock('Organize Tasks', 'applet-48.png', $m, "$m.$a");
