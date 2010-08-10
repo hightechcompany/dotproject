@@ -92,6 +92,9 @@ if ($proFilter == '-4') {
 if ($user_id && $m_orig == 'admin' && $a_orig == 'viewuser') {
 	$q->addWhere('project_owner = ' . $user_id);
 }
+elseif (intval($AppUI->getState('ProjIdxowner')) > 0) {
+        $q->addWhere('project_owner = ' . intval($AppUI->getState('ProjIdxowner')));
+}
 
 if ($showInactive != '1') {
 	$q->addWhere('project_status != 7');
