@@ -60,14 +60,12 @@ if (!db_loadHash($sql, $drow) && $dept_id > 0) {
 
 	// collect all the users for the department owner list
 	$q  = new DBQuery;
-	$q->addTable('users','u');
-	$q->addTable('contacts','con');
+	$q->addTable('users', 'u');
+	$q->addJoin('contacts', 'c', 'c.contact_id = u.user_contact');
 	$q->addQuery('user_id');
-	$q->addQuery('CONCAT_WS(", ",contact_last_name, contact_first_name)'); 
-	$q->addOrder('contact_first_name');
-	$q->addWhere('u.user_contact = con.contact_id');
-	$q->addOrder('contact_last_name, contact_first_name');
-	$owners = arrayMerge(array('0'=>''), $q->loadHashList());
+	$q->addQuery("CONCAT(contact_last_name, ', ', contact_first_name, ' (', user_username, ')')" . ' AS label');
+	$q->addOrder('contact_last_name, contact_first_name, user_username');
+	$owners = array('0' => '') + $q->loadHashList();
 
 // setup the title block
 	$ttl = $company_id > 0 ? "Edit Department" : "Add Department";
@@ -172,7 +170,7 @@ if (count($depts)) {
 	<td align="right"><?php echo $AppUI->_('Owner');?>:</td>
 	<td>
 <?php
-	echo arraySelect($owners, 'dept_owner', 'size="1" class="text"', $drow["dept_owner"]);
+       echo arraySelect($owners, 'dept_owner', 'size="1" class="text"', $drow["dept_owner"], false, true);
 ?>
 	</td>
 </tr>

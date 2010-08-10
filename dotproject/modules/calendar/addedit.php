@@ -43,13 +43,13 @@ if ($is_clash) {
 		$q = new DBQuery;
 		$q->addTable('users', 'u');
 		$q->addTable('contacts', 'con');
-		$q->addQuery('user_id, CONCAT_WS(" " , contact_first_name, contact_last_name)');
+		$q->addQuery("user_id, CONCAT(contact_last_name, ', ', contact_first_name)");
 		$q->addWhere('user_id IN (' . $assignee_list . ')');
 		$q->addWhere("user_contact = contact_id");
 		$assigned = $q->loadHashList();
 	}
 } else if ($event_id == 0) {
-	$assigned[$AppUI->user_id] = "$AppUI->user_first_name $AppUI->user_last_name";
+	$assigned[$AppUI->user_id] = "$AppUI->user_last_name, $AppUI->user_first_name";
 } else {
 	$assigned = $obj->getAssigned();
 }

@@ -63,12 +63,18 @@ if (getPermission('admin', 'view')) {
 	$titleBlock->addCell();
 	$titleBlock->addCell($AppUI->_('User') . ':');
 	
-	$perms =& $AppUI->acl();
-	$user_list = $perms->getPermittedUsers('tasks');
+	$q  = new DBQuery;
+	$q->addTable('users','u');
+	$q->addTable('contacts','con');
+	$q->addQuery('user_id');
+	$q->addQuery("CONCAT(contact_last_name, ', ', contact_first_name, ' (', user_username, ')')" . ' AS label');
+	$q->addOrder('contact_last_name');
+	$q->addWhere('u.user_contact = con.contact_id');
+	$user_list = $q->loadHashList();
 	$titleBlock->addCell(arraySelect($user_list, 'user_id', 
 	                                 ('size="1" class="text"' 
 	                                  . ' onChange="document.userIdForm.submit();"'), 
-	                                 $user_id, false), '',
+	                                 $user_id, false, true), '',
 	                     '<form action="?m=tasks" method="post" name="userIdForm">','</form>');
 }
 

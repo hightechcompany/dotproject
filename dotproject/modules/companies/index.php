@@ -48,12 +48,18 @@ if ($search_string != '') {
 // retrieve list of records
 $search_string = $AppUI->___($search_string);
 
-$perms =& $AppUI->acl();
-$owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermittedUsers('companies');
+$q  = new DBQuery;
+$q->addTable('users','u');
+$q->addTable('contacts','con');
+$q->addQuery('user_id');
+$q->addQuery("CONCAT(contact_last_name, ', ', contact_first_name, ' (', user_username, ')')" . ' AS label');
+$q->addOrder('contact_last_name');
+$q->addWhere('u.user_contact = con.contact_id');
+$owner_list = array(-1 => $AppUI->_('All Users', UI_OUTPUT_RAW)) + $q->loadHashList();
 //db_loadHashList($sql);
 $owner_combo = arraySelect($owner_list, 'owner_filter_id', 
                            'class="text" onchange="javascript:document.searchform.submit()"', 
-                           $owner_filter_id, false);
+                           $owner_filter_id, false, true);
 
 // setup the title block
 $titleBlock = new CTitleBlock('Companies', 'handshake.png', $m, "$m.$a");

@@ -32,7 +32,7 @@ $q = new DBQuery;
 $q->addTable('users','u');
 $q->addTable('contacts','con');
 $q->addQuery('user_id');
-$q->addQuery('CONCAT_WS(", ",contact_last_name,contact_first_name)');
+$q->addQuery("CONCAT(contact_last_name, ', ', contact_first_name, ' (', user_username, ')')" . ' AS label');
 $q->addOrder('contact_last_name');
 $q->addWhere('u.user_contact = con.contact_id');
 $users = $q->loadHashList();
@@ -275,7 +275,7 @@ function setDepartment(department_id_string) {
 		<tr>
 			<td align="right" nowrap="nowrap"><?php echo $AppUI->_('Project Owner');?></td>
 			<td colspan="2">
-<?php echo arraySelect($users, 'project_owner', 'size="1" style="width:200px;" class="text"', $row->project_owner? $row->project_owner : $AppUI->user_id) ?>
+<?php echo arraySelect($users, 'project_owner', 'size="1" style="width:200px;" class="text"', $row->project_owner? $row->project_owner : $AppUI->user_id, false, true) ?>
 			</td>
 		</tr>
 		<tr>

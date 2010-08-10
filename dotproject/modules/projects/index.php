@@ -86,13 +86,10 @@ $owner = $AppUI->getState('ProjIdxowner') !== NULL ? $AppUI->getState('ProjIdxow
 $q->addTable('users', 'u');
 $q->addJoin('contacts', 'c', 'c.contact_id = u.user_contact');
 $q->addQuery('user_id');
-$q->addQuery("CONCAT(contact_last_name, ', ', contact_first_name, ' (', user_username, ')')" 
-             . ' AS label');
+$q->addQuery("CONCAT(contact_last_name, ', ', contact_first_name, ' (', user_username, ')')" . ' AS label');
 $q->addOrder('contact_last_name, contact_first_name, user_username');
 $userRows = array(0 => $AppUI->_('All Users', UI_OUTPUT_RAW)) + $q->loadHashList();
-$bufferUser = arraySelect($userRows, 'show_owner', 
-                          'class="text" onchange="document.pickUser.submit()""', $owner);
-
+$bufferUser = arraySelect($userRows, 'show_owner', 'class="text" onchange="document.pickUser.submit()""', $owner, false, true);
 /* setting this to filter project_list_data function below
  0 = undefined
  3 = active

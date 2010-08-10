@@ -19,16 +19,16 @@ function bestColor($bg, $lt='#ffffff', $dk='#000000') {
 	$g = hexdec(mb_substr($bg, 2, 2));
 	$b = hexdec(mb_substr($bg, 4, 2));
 
-	return (($r < $x && $g < $x 
-	         || $r < $x && $b < $x 
+	return (($r < $x && $g < $x
+	         || $r < $x && $b < $x
 	         || $b < $x && $g < $x) ? $lt  : $dk);
 }
 
 ##
 ## returns a select box based on an key,value array where selected is based on key
 ##
-function arraySelect(&$arr, $select_name, $select_attribs, $selected, $translate=false) {
-	GLOBAL $AppUI;
+function arraySelect(&$arr, $select_name, $select_attribs, $selected, $translate=false, $filteruser=false) {
+  GLOBAL $AppUI;
 	if (! is_array($arr)) {
 		dprint(__FILE__, __LINE__, 0, 'arraySelect called with no array');
 		return '';
@@ -37,6 +37,12 @@ function arraySelect(&$arr, $select_name, $select_attribs, $selected, $translate
 	$s = ("\n" . '<select name="' . $select_name . '" ' . $select_attribs . '>');
 	$did_selected = 0;
 	foreach ($arr as $k => $v) {
+		if ($filteruser) {
+			if ($AppUI->acl()->checkLogin($k) == false && $k > 0) {
+				continue;
+			}
+		}
+
 		if ($translate) {
 			$v = @$AppUI->_($v);
 			// This is supplied to allow some Hungarian characters to
@@ -46,8 +52,8 @@ function arraySelect(&$arr, $select_name, $select_attribs, $selected, $translate
 			$v=str_replace('&#369;','�',$v);
 			$v=str_replace('&#337;','�',$v);
 		}
-		$s .= ("\n\t" . '<option value="' . $AppUI->___($k) . '"' 
-		       . (($k == $selected && !$did_selected) ? ' selected="selected"' : '') . ">" 
+		$s .= ("\n\t" . '<option value="' . $AppUI->___($k) . '"'
+		       . (($k == $selected && !$did_selected) ? ' selected="selected"' : '') . ">"
 		       . $AppUI->___($v) . '</option>');
 		if ($k == $selected) {
 			$did_selected = 1;
@@ -97,13 +103,13 @@ function tree_recurse($id, $indent, $list, $children) {
 **	@param	string	HTML select box name identifier
 **	@param	string	HTML attributes
 **	@param	int			Proejct ID for preselection
-**	@param	int			Project ID which will be excluded from the list 
+**	@param	int			Project ID which will be excluded from the list
 **									(e.g. in the tasks import list exclude the project to import into)
 **	@return	string	HTML selectbox
 
 */
 
-function projectSelectWithOptGroup($user_id, $select_name, $select_attribs, $selected, 
+function projectSelectWithOptGroup($user_id, $select_name, $select_attribs, $selected,
                                    $excludeProjWithId = null) {
 	global $AppUI ;
 	$q = new DBQuery();
@@ -116,19 +122,19 @@ function projectSelectWithOptGroup($user_id, $select_name, $select_attribs, $sel
 	$proj->setAllowedSQL($user_id, $q);
 	$q->addOrder('co.company_name, project_name');
 	$projects = $q->loadList();
-	$s = ("\n" . '<select name="' . $select_name . '"' 
+	$s = ("\n" . '<select name="' . $select_name . '"'
 		  . (($select_attribs) ? (' ' . $select_attribs) : '') . '>');
-	$s .= ("\n\t" . '<option value="0"' . ($selected == 0 ? ' selected="selected"' : '') . ' >' 
+	$s .= ("\n\t" . '<option value="0"' . ($selected == 0 ? ' selected="selected"' : '') . ' >'
 	       . $AppUI->_('None') . '</option>');
 	$current_company = '';
 	foreach ($projects as $p) {
 		if ($p['company_name'] != $current_company) {
 			$current_company = $AppUI->___($p['company_name']);
-			$s .= ("\n" . '<optgroup label="' . $current_company . '" >' . $current_company 
+			$s .= ("\n" . '<optgroup label="' . $current_company . '" >' . $current_company
 			       . '</optgroup>');
 		}
-		$s .= ("\n\t" . '<option value="' . $p['project_id'] . '"' 
-		       . ($selected == $p['project_id'] ? ' selected="selected"' : '') 
+		$s .= ("\n\t" . '<option value="' . $p['project_id'] . '"'
+		       . ($selected == $p['project_id'] ? ' selected="selected"' : '')
 			   . '>&nbsp;&nbsp;&nbsp;' . $AppUI->___($p['project_name']) . '</option>');
 		}
 	$s .= "\n</select>\n";
@@ -163,9 +169,9 @@ function breadCrumbs(&$arr) {
 ##
 function dPcontextHelp($title, $link='') {
 	global $AppUI;
-	return ('<a href="#' . $AppUI->___($link) . '" onClick="' 
-	        . "javascript:window.open('?m=help&amp;dialog=1&amp;hid=$link', 'contexthelp', " 
-	        . "'width=400, height=400, left=50, top=50, scrollbars=yes, resizable=yes')" . '">' 
+	return ('<a href="#' . $AppUI->___($link) . '" onClick="'
+	        . "javascript:window.open('?m=help&amp;dialog=1&amp;hid=$link', 'contexthelp', "
+	        . "'width=400, height=400, left=50, top=50, scrollbars=yes, resizable=yes')" . '">'
 			. $AppUI->_($title).'</a>');
 }
 
@@ -218,7 +224,7 @@ function dPshowModuleConfig($config) {
 	$s = '<table cellspacing="2" cellpadding="2" border="0" class="std" width="50%">';
 	$s .= '<tr><th colspan="2">'.$AppUI->_('Module Configuration').'</th></tr>';
 	foreach ($config as $k => $v) {
-		$s .= ('<tr><td width="50%">' . $AppUI->_($k) . '</td><td width="50%" class="hilite">' 
+		$s .= ('<tr><td width="50%">' . $AppUI->_($k) . '</td><td width="50%" class="hilite">'
 		       . $AppUI->_($v) . '</td></tr>');
 	}
 	$s .= '</table>';
@@ -233,15 +239,15 @@ function dPshowModuleConfig($config) {
  */
 function dPfindImage($name, $module=null) {
 	global $uistyle; // uistyle must be declared globally
-	
+
 	//array of locations, rooted at DP_BASE
-	$locations_to_search = array(('/style/' . $uistyle . '/images/'), 
-	                             'module-image' => ('/modules/' . $module . '/images/'), 
-	                             'module-icon' => ('/modules/' . $module . '/images/icons/'), 
+	$locations_to_search = array(('/style/' . $uistyle . '/images/'),
+	                             'module-image' => ('/modules/' . $module . '/images/'),
+	                             'module-icon' => ('/modules/' . $module . '/images/icons/'),
 	                             ('/images/icons/'), ('/images/obj/'));
-	
+
 	foreach ($locations_to_search as $exception => $folder) {
-		if ((($module) || ($exception != 'module-image' && $exception != 'module-icon')) 
+		if ((($module) || ($exception != 'module-image' && $exception != 'module-icon'))
 			&& file_exists(DP_BASE_DIR . $folder . $name)) {
 			return (DP_BASE_URL . $folder . $name);
 		}
@@ -258,14 +264,14 @@ function dPfindImage($name, $module=null) {
  */
 function dPshowImage($src, $wid='', $hgt='', $alt='', $title='') {
 	global $AppUI;
-	
+
 	if ($src == '') {
 		return '';
 	}
-	
-	return ('<img src="' . $AppUI->___($src) . '" ' 
-	        . (($wid) ? (' width="' . $AppUI->___($wid) . '"') : '') 
-	        . (($hgt) ? (' height="' . $AppUI->___($hgt) . '"') : '') 
+
+	return ('<img src="' . $AppUI->___($src) . '" '
+	        . (($wid) ? (' width="' . $AppUI->___($wid) . '"') : '')
+	        . (($hgt) ? (' height="' . $AppUI->___($hgt) . '"') : '')
 	        . ' alt="' . (($alt) ? $AppUI->_($alt) : $AppUI->___($src)) . '"'
 	        . (($title) ? (' title="' . $AppUI->_($title) . '"') : '') . ' border="0" />');
 }
@@ -298,7 +304,7 @@ function dPgetCleanParam(&$arr, $name, $def=null) {
 	// note that you have to handle splits with \n, \r, and \t later since
 	// they *are* allowed in some inputs
 	$val = preg_replace('/([\x00-\x08][\x0b-\x0c][\x0e-\x20])/', '', $val);
-	
+
 	// straight replacements, the user should never need these since they're normal characters
 	// this prevents like <IMG SRC=&#X40&#X61&#X76&#X61&#X73&#X63&#X72&#X69&#X70&#X74&#X3A&#X61&#X6C&#X65&#X72&#X74&#X28&#X27&#X58&#X53&#X53&#X27&#X29>
 	$search = 'abcdefghijklmnopqrstuvwxyz';
@@ -310,15 +316,15 @@ function dPgetCleanParam(&$arr, $name, $def=null) {
 		// 0{0,7} matches any padded zeros, which are optional and go up to 8 chars
 		// &#x0040 @ search for the hex values
 		// with a ;
-		$val = preg_replace('/(&#[x|X]0{0,8}' . dechex(ord($search[$i])) . ';?)/i', 
+		$val = preg_replace('/(&#[x|X]0{0,8}' . dechex(ord($search[$i])) . ';?)/i',
 		                    $search[$i], $val);
 		// &#00064 @ 0{0,7} matches '0' zero to seven times
 		// with a ;
 		$val = preg_replace('/(&#0{0,8}' . ord($search[$i]) . ';?)/', $search[$i], $val);
 	}
-   
+
 	// now the only remaining whitespace attacks are \t, \n, and \r
-	$ra1 = Array('javascript', 'vbscript', 'expression', 
+	$ra1 = Array('javascript', 'vbscript', 'expression',
 				 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script',
 				 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer',
 				 'layer', 'bgsound', 'title', 'base');
@@ -343,7 +349,7 @@ function dPgetCleanParam(&$arr, $name, $def=null) {
 				 'onselect', 'onselectionchange', 'onselectstart', 'onstart',
 				 'onstop', 'onsubmit', 'onunload');
 	$ra = array_merge($ra1, $ra2);
-   
+
 	$found = true; // keep replacing as long as the previous round replaced something
 	while ($found == true) {
 		$val_before = $val;
@@ -362,7 +368,7 @@ function dPgetCleanParam(&$arr, $name, $def=null) {
 			// add in <> to nerf the tag
 			$replacement = mb_substr($ra[$i], 0, 2).'<x>'.mb_substr($ra[$i], 2);
 			// filter out the hex tags
-			$val = ((in_array($arr[$name],$ra)) 
+			$val = ((in_array($arr[$name],$ra))
 			        ? preg_replace($pattern, $replacement, $val) : $val);
 			if ($val_before == $val) {
 				// no replacements were made, so exit the loop
@@ -396,20 +402,20 @@ function addHistory($table, $id, $action = 'modify', $description = '', $project
 	 */
 	if (!dPgetConfig('log_changes')) return;
 	$description = str_replace("'", "\'", $description);
-	
+
 	$q = new DBQuery;
 	$q->addTable('modules');
 	$q->addWhere("mod_name = 'History' AND mod_active = 1");
 	$qid = $q->exec();
 
 	if (! $qid || db_num_rows($qid) == 0) {
-		$AppUI->setMsg('History module is not loaded, but your config file has requested that' 
-		               . ' changes be logged. You must either change the config file or install' 
+		$AppUI->setMsg('History module is not loaded, but your config file has requested that'
+		               . ' changes be logged. You must either change the config file or install'
 		               . ' and activate the history module to log changes.', UI_MSG_ALERT);
 		$q->clear();
 		return;
 	}
-	
+
 	$q->clear();
 	$q->addTable('history');
 	$q->addInsert('history_action', $action);
@@ -447,7 +453,7 @@ function dPgetSysVal($title) {
 	} else if ($sep1 == "\\r") {
 		$sep1 = "\r";
 	}
-	
+
 	$temp = explode($sep1, $row['sysval_value']);
 	$arr = array();
 	// We use trim() to make sure a numeric that has spaces
@@ -465,7 +471,7 @@ function dPgetSysVal($title) {
 function dPuserHasRole($name) {
 	global $AppUI;
 	$uid = (int)$AppUI->user_id;
-	
+
 	$q	= new DBQuery;
 	$q->addTable('roles', 'r');
 	$q->innerJoin('user_roles', 'ur', 'ur.role_id=r.role_id');
@@ -477,15 +483,15 @@ function dPuserHasRole($name) {
 
 /**
  *	@param int number of hours to format
- *	@return string 
+ *	@return string
  */
 function dPformatDuration($x) {
 	global $AppUI;
-	
+
 	$dur_day = floor($x / dPgetConfig('daily_working_hours'));
 	$dur_hour = ($x % dPgetConfig('daily_working_hours'));
 	$str = '';
-	
+
 	if ($dur_day) {
 		$str .= $dur_day . ' ' . $AppUI->_('day' . ((abs($dur_day) == 1) ? '' : 's')) . ' ';
 	}
@@ -521,48 +527,48 @@ define ('DP_FORM_URI', 2);
 define ('DP_FORM_JSVARS', 4);
 function dPformSafe($txt, $flag_bits = 0) {
 	global $AppUI, $locale_char_set;
-	
+
 	if (!$locale_char_set) {
 		$locale_char_set = 'utf-8';
 	}
-	
-	$deslash = $flag_bits && DP_FORM_DESLASH; 
+
+	$deslash = $flag_bits && DP_FORM_DESLASH;
 	$isURI = $flag_bits && DP_FORM_URI;
 	$isJSVars = $flag_bits && DP_FORM_JSVARS;
-	
+
 	if (is_object($txt) || is_array($txt)) {
 		$txt_arr = ((is_object($txt)) ? get_object_vars($txt) : $txt);
 		foreach ($txt_arr as $k => $v) {
 			$value = (($deslash) ? $AppUI->___($v, UI_OUTPUT_RAW) : $v);
 			$value = (($isURI) ? $AppUI->___($value, UI_OUTPUT_URI) : $value);
-			
+
 			if (!($isURI)) {
 				$value = (($isJSVars) ? $AppUI->___($value, UI_OUTPUT_JS) : $value);
 				$value = ((!($deslash)) ? htmlspecialchars($value) : $AppUI->___($value));
 			}
-			
+
 			if (is_object($txt)) {
 				$txt->$k = $value;
 			} else {
 				$txt[$k] = $value;
 			}
 		}
-		
+
 	} else {
 		$txt = (($deslash) ? $AppUI->___($txt, UI_OUTPUT_RAW) : $txt);
 		$txt = (($isURI) ? $AppUI->___($txt, UI_OUTPUT_URI) : $txt);
-		
+
 		if (!($isURI)) {
 			$txt = (($isJSVars) ? $AppUI->___($txt, UI_OUTPUT_JS) : $AppUI->___($txt));
 			$txt = ((!($deslash)) ? htmlspecialchars($txt) : $AppUI->___($txt));
 		}
-		
+
 		/*
 		$txt = (($deslash) ? stripslashes($txt) : $txt);
 		$txt = (($isURI) ? str_replace(" ", "%20", $txt) : $txt);
-		$txt = (($isJSVars) 
-		        ? str_replace("'", "\\'", str_replace('"', '\"', $txt)) 
-		        : str_replace('&#039;', '&apos;', 
+		$txt = (($isJSVars)
+		        ? str_replace("'", "\\'", str_replace('"', '\"', $txt))
+		        : str_replace('&#039;', '&apos;',
 		                      htmlspecialchars($txt, ENT_QUOTES, $locale_char_set)));
 		*/
 	}
@@ -583,7 +589,7 @@ function convert2days($durn, $units) {
 function formatTime($uts) {
 	global $AppUI;
 	$date = new CDate();
-	$date->setDate($uts, DATE_FORMAT_UNIXTIME);	
+	$date->setDate($uts, DATE_FORMAT_UNIXTIME);
 	return $date->format($AppUI->getPref('SHDATEFORMAT'));
 }
 
@@ -600,7 +606,7 @@ function formatCurrency($number, $format) {
 	}
 	// If the requested locale doesn't work, don't fail,
 	// revert to the system default.
-	if (($locale_char_set != 'utf-8' || ! setlocale(LC_MONETARY, $format . '.UTF8')) 
+	if (($locale_char_set != 'utf-8' || ! setlocale(LC_MONETARY, $format . '.UTF8'))
 	    && !(setlocale(LC_MONETARY, $format))) {
 		setlocale(LC_MONETARY, '');
 	}
@@ -628,7 +634,7 @@ function formatCurrency($number, $format) {
 	if (! isset($mondat['mon_thousands_sep'])) {
 		$mondat['mon_thousands_sep'] = ',';
 	}
-	$numeric_portion = number_format(abs($number), $mondat['int_frac_digits'], 
+	$numeric_portion = number_format(abs($number), $mondat['int_frac_digits'],
 	                                 $mondat['mon_decimal_point'], $mondat['mon_thousands_sep']);
 	// Not sure, but most countries don't put the sign in if it is positive.
 	$letter='p';
@@ -713,7 +719,7 @@ function findTabModules($module, $file = null) {
 	}
 
 	if (isset($file)) {
-		if (isset($_SESSION['all_tabs'][$module][$file]) 
+		if (isset($_SESSION['all_tabs'][$module][$file])
 		    && is_array($_SESSION['all_tabs'][$module][$file])) {
 			$tabs_array =& $_SESSION['all_tabs'][$module][$file];
 		} else {
@@ -746,21 +752,21 @@ function getUsersArray() {
 	$q->addQuery('user_id, user_username, contact_first_name, contact_last_name');
 	$q->addJoin('contacts', 'con', 'contact_id = user_contact');
 	$q->addOrder('contact_first_name, contact_last_name');
-	return $q->loadHashList('user_id');	
+	return $q->loadHashList('user_id');
 }
 
 function getUsersCombo($default_user_id = 0, $first_option = 'All users') {
 	global $AppUI;
-	
+
 	$parsed = '<select name="user_id" class="text">';
 	if ($first_option != "") {
-		$parsed .= ('<option value="0" ' 
-		            . ((!($default_user_id)) ? 'selected="selected"' : '') . '>' 
+		$parsed .= ('<option value="0" '
+		            . ((!($default_user_id)) ? 'selected="selected"' : '') . '>'
 		            . $AppUI->_($first_option) . '</option>');
 	}
 	foreach (getUsersArray() as $user_id => $user) {
 		$selected = $user_id == $default_user_id ? ' selected="selected"' : '';
-		$parsed .= ('<option value="' . $user_id . '"' . $selected . '>' 
+		$parsed .= ('<option value="' . $user_id . '"' . $selected . '>'
 		            . $user['contact_first_name'] . ' '.$user['contact_last_name'] . '</option>');
 	}
 	$parsed .= '</select>';
@@ -771,43 +777,43 @@ function getUsersCombo($default_user_id = 0, $first_option = 'All users') {
  * Moved modified version from files.class.php as pagation could be useful in any module
  */
 function shownavbar($xpg_totalrecs, $xpg_pagesize, $xpg_total_pages, $page, $folder = false) {
-	
+
 	global $AppUI, $tab, $m, $a;
 	$NUM_PAGES_TO_DISPLAY = 15; //TODO?: Set by System Config Value ...
 	$RANGE_LIMITS = floor($NUM_PAGES_TO_DISPLAY / 2);
-	
+
 	$xpg_prev_page = $xpg_next_page = 1;
-	
+
 	echo "\t" . '<table width="100%" cellspacing="0" cellpadding="0" border="0"><tr>' . "\n";
 	// more than a page of results
 	if ($xpg_totalrecs > $xpg_pagesize) {
 		$xpg_prev_page = $page - 1;
 		$xpg_next_page = $page + 1;
-		
+
 		// left buttons, if applicable
-		echo '<td align="left" width="15%">' . "\n";		
+		echo '<td align="left" width="15%">' . "\n";
 		if ($xpg_prev_page > 0) {
-			echo ('<a href="./index.php?m=' . $m 
-			      . (($a) ? ('&a=' . $a) : '') . (($tab) ? ('&tab=' . $tab) : '') 
-			      . (($folder) ? ('&folder=' . $folder) : '') . '&page=1">' 
-			      . '<img src="images/navfirst.gif" border="0" Alt="' 
+			echo ('<a href="./index.php?m=' . $m
+			      . (($a) ? ('&a=' . $a) : '') . (($tab) ? ('&tab=' . $tab) : '')
+			      . (($folder) ? ('&folder=' . $folder) : '') . '&page=1">'
+			      . '<img src="images/navfirst.gif" border="0" Alt="'
 			      . $AppUI->_('First Page') .'"></a>' . "\n");
 			echo ('&nbsp;&nbsp;' . "\n");
-			echo ('<a href="./index.php?m=' . $m 
-				  . (($a) ? ('&a=' . $a) : '') . (($tab) ? ('&tab=' . $tab) : '') 
-				  . (($folder) ? ('&folder=' . $folder) : '') . '&page=' . $xpg_prev_page . '">' 
-				  . '<img src="images/navleft.gif" border="0" Alt="' 
+			echo ('<a href="./index.php?m=' . $m
+				  . (($a) ? ('&a=' . $a) : '') . (($tab) ? ('&tab=' . $tab) : '')
+				  . (($folder) ? ('&folder=' . $folder) : '') . '&page=' . $xpg_prev_page . '">'
+				  . '<img src="images/navleft.gif" border="0" Alt="'
 				  . $AppUI->_('Previous Page') .': ' . $xpg_prev_page .'"></a>' . "\n");
 		} else {
 			echo ("&nbsp;\n");
 		}
 		echo "</td>\n";
-		
+
 		// central text (files, total pages, and page selectors)
 		echo '<td align="center" width="70%">' . "\n";
-		echo ($xpg_totalrecs . ' ' . $AppUI->_('Result(s)') 
+		echo ($xpg_totalrecs . ' ' . $AppUI->_('Result(s)')
 			  . ' (' . $xpg_total_pages . ' ' . $AppUI->_('Page(s)') . ')' . "<br />\n");
-		
+
 		$start_page_range = (($page > $RANGE_LIMITS) ? ($page - $RANGE_LIMITS) : 1) ;
 		$end_page_range = (($start_page_range - 1) + $NUM_PAGES_TO_DISPLAY);
 		if ($xpg_total_pages < $end_page_range) {
@@ -815,44 +821,44 @@ function shownavbar($xpg_totalrecs, $xpg_pagesize, $xpg_total_pages, $page, $fol
 			$start_page_range = (($start_page_range > 0) ? $start_page_range : 1);
 			$end_page_range = $xpg_total_pages;
 		}
-		
+
 		echo (($start_page_range <= $end_page_range) ? ' [ ' : '');
 		for ($n = $start_page_range; $n <= $end_page_range; $n++) {
-			echo (($n == $page) 
-				  ? '<b>' : ('<a href="./index.php?m=' . $m 
-			                 . (($a) ? ('&a=' . $a) : '') 
-			                 . (($tab) ? ('&tab=' . $tab) : '') 
-			                 . (($folder) ? ('&folder=' . $folder) : '') . '&page=' . $n . '">')); 
-			echo ($n); 
+			echo (($n == $page)
+				  ? '<b>' : ('<a href="./index.php?m=' . $m
+			                 . (($a) ? ('&a=' . $a) : '')
+			                 . (($tab) ? ('&tab=' . $tab) : '')
+			                 . (($folder) ? ('&folder=' . $folder) : '') . '&page=' . $n . '">'));
+			echo ($n);
 			echo (($n == $page) ? '</b>' : '</a>');
 			echo (($n < $end_page_range) ? ' | ' : " ]\n");
 		}
-		
+
 		echo "</td>\n";
-		
+
 		// right buttons, if applicable
 		echo '<td align="left" width="15%">' . "\n";
 		if ($xpg_next_page <= $xpg_total_pages) {
-			echo ('<a href="./index.php?m=' . $m 
-			      . (($a) ? ('&a=' . $a) : '') . (($tab) ? ('&tab=' . $tab) : '') 
-			      . (($folder) ? ('&folder=' . $folder) : '') . '&page=' . $xpg_next_page . '">' 
-			      . '<img src="images/navright.gif" border="0" Alt="' 
+			echo ('<a href="./index.php?m=' . $m
+			      . (($a) ? ('&a=' . $a) : '') . (($tab) ? ('&tab=' . $tab) : '')
+			      . (($folder) ? ('&folder=' . $folder) : '') . '&page=' . $xpg_next_page . '">'
+			      . '<img src="images/navright.gif" border="0" Alt="'
 			      . $AppUI->_('Next Page') .': ' . $xpg_next_page .'"></a>' . "\n");
 			echo "&nbsp;&nbsp;\n";
-			echo ('<a href="./index.php?m=' . $m 
-			      . (($a) ? ('&a=' . $a) : '') . (($tab) ? ('&tab=' . $tab) : '') 
-			      . (($folder) ? ('&folder=' . $folder) : '') . '&page=' . $xpg_total_pages . '">' 
-			      . '<img src="images/navlast.gif" border="0" Alt="' 
+			echo ('<a href="./index.php?m=' . $m
+			      . (($a) ? ('&a=' . $a) : '') . (($tab) ? ('&tab=' . $tab) : '')
+			      . (($folder) ? ('&folder=' . $folder) : '') . '&page=' . $xpg_total_pages . '">'
+			      . '<img src="images/navlast.gif" border="0" Alt="'
 			      . $AppUI->_('Last Page') .'"></a>' . "\n");
 		} else {
 			echo ("&nbsp;\n");
 		}
 		echo "</td>\n";
 	} else { // we dont have enough results for more than a page
-	  echo ('<td align="center">' 
-			. (($xpg_totalrecs) 
-			   ? ($xpg_totalrecs . ' ' . $AppUI->_('Result(s)')) 
-			   : ($AppUI->_('No Result(s)'))) 
+	  echo ('<td align="center">'
+			. (($xpg_totalrecs)
+			   ? ($xpg_totalrecs . ' ' . $AppUI->_('Result(s)'))
+			   : ($AppUI->_('No Result(s)')))
 			. "</td>\n");
 	}
 	echo "</tr></table>";
@@ -877,19 +883,19 @@ function dPrequiredFields($requiredFields) {
 	if (!empty($requiredFields)) {
 		foreach ($requiredFields as $rf => $comparator) {
 			$buffer.= 'if (' . $rf . html_entity_decode($comparator, ENT_QUOTES) . ') {' . "\n";
-			$buffer.= ("\t" . 'msg += "\n' . $AppUI->_('required_field_' . $rf, UI_OUTPUT_JS) 
+			$buffer.= ("\t" . 'msg += "\n' . $AppUI->_('required_field_' . $rf, UI_OUTPUT_JS)
 			           . '";' . "\n");
 
-			/* MSIE cannot handle the focus command for some disabled or hidden 
-			 * fields like the start/end date fields. Another workaround would be 
-			 * to check whether the field is disabled, but then one would for instance 
+			/* MSIE cannot handle the focus command for some disabled or hidden
+			 * fields like the start/end date fields. Another workaround would be
+			 * to check whether the field is disabled, but then one would for instance
 			 * need to use end_date instead of project_end_date in the projects addedit site.
-			 * As this cannot be guaranteed since these fields are grabbed from a user-specifiable 
+			 * As this cannot be guaranteed since these fields are grabbed from a user-specifiable
 			 * System Value it's IMHO more safe to disable the focus for MSIE.
 			 */
 			$r = mb_strstr($rf, '.');
-			$buffer .= ("\t" 
-			            . 'if ((foc==false) && (navigator.userAgent.indexOf(\'MSIE\')== -1)) {' 
+			$buffer .= ("\t"
+			            . 'if ((foc==false) && (navigator.userAgent.indexOf(\'MSIE\')== -1)) {'
 			            ."\n");
 			$buffer.= "\t\t" . 'f.' . mb_substr($r, 1, mb_strpos($r,'.',1) - 1) . '.focus();' . "\n";
 			$buffer.= "\t\t" . 'foc=true;' . "\n";

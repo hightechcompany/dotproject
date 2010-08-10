@@ -31,12 +31,13 @@ $q->addWhere('(company_id = 0 OR company_id = ' . $company_id . ')');
 $task_log_costcodes = $task_log_costcodes + $q->loadHashList();
 $q->clear();
 
-$q->addTable('users');
-$q->addQuery("user_id, concat(contact_first_name,' ',contact_last_name)");
-$q->addJoin('contacts', 'con', 'user_contact = contact_id');
-$q->addOrder('contact_first_name, contact_last_name');
-$users = array('-1' => $AppUI->_('All Users')) + $q->loadHashList();
-$q->clear();
+$q->addTable('users','u');
+$q->addTable('contacts','con');
+$q->addQuery('user_id');
+$q->addQuery("CONCAT(contact_last_name, ', ', contact_first_name, ' (', user_username, ')')" . ' AS label');
+$q->addOrder('contact_last_name');
+$q->addWhere('u.user_contact = con.contact_id');
+$users = arrayMerge(array('-1' => $AppUI->_('All Users')), $q->loadHashList());
 
 $cost_code = dPgetParam($_GET, 'cost_code', '0');
 
@@ -75,7 +76,7 @@ function delIt2(id) {
 	<td width="1%" nowrap="nowrap"><input type="checkbox" name="hide_complete" id="hide_complete" <?php echo $hide_complete?'checked="checked"':''?> onchange="document.frmFilter.submit()"><label for="hide_complete"><?php echo $AppUI->_('Hide 100% Complete')?></label></td>
 	<td width="1%" nowrap="nowrap"><?php echo $AppUI->_('User Filter')?></td>
 	<td width="1%"><?php echo arraySelect($users, 'user_id', 'size="1" class="text" id="medium" onchange="document.frmFilter.submit()"',
-                          $user_id)?></td>
+			  $user_id, false, true)?></td>
 	<td width="1%" nowrap="nowrap"><?php echo $AppUI->_('Cost Code Filter')?></td>
 	<td width="1%"><?php echo arraySelect($task_log_costcodes, 'cost_code', 'size="1" class="text" onchange="document.frmFilter.submit()"',
                           $cost_code)?></td>
