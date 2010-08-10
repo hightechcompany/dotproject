@@ -27,15 +27,25 @@ if (getPermission('admin', 'view')) {
 $canEdit = getPermission($m, 'edit');
 
 // if task priority set and items selected, do some work
-$action = dPgetParam($_POST, 'action', 99);
+$action = dPgetParam($_POST, 'action', 'c');
 $selected = dPgetParam($_POST, 'selected', 0);
 
 $priorities = dPgetSysVal('TaskPriority');
 $durnTypes = dPgetSysVal('TaskDurationType');
 
+$q = new DBQuery;
+$q->addTable('users','u');
+$q->addTable('contacts','con');
+$q->addQuery('user_id');
+$q->addQuery("CONCAT(contact_last_name, ', ', contact_first_name, ' (', user_username, ')')" . ' AS label');
+$q->addOrder('contact_last_name');
+$q->addWhere('u.user_contact = con.contact_id');
+$users = $q->loadHashList();
+
 if ($selected && count($selected)) {
 	$new_task = dPgetParam($_POST, 'new_task', -1);
 	$new_project = dPgetParam($_POST, 'new_project', $project_id);
+	$new_owner = dPgetParam($_POST, 'new_owner', -1);
 	
 	foreach ($selected as $key => $val) {
 		$t = new CTask();
@@ -43,8 +53,24 @@ if ($selected && count($selected)) {
 		if (isset($_POST['include_children']) && $_POST['include_children']) {
 			$children = $t->getDeepChildren();
 		}
-		
-		if ($action == 'f') {
+
+		if ($action == 'changeOwner' && $new_owner != -1) {
+			// change owner of task
+			if (getPermission('tasks', 'edit', $t->task_id)) {
+				$t->task_owner = $new_owner;
+				$t->store();
+			}
+			if (isset($children)) {
+				foreach ($children as $child_id) {
+					if (getPermission('tasks', 'edit', $child_t->task_id)) {
+						$child_t = &new CTask();
+						$child_t->load($child_id);
+						$child_t->task_owner = $new_owner;
+						$child_t->store();
+					}
+				}
+			}
+		} else if ($action == 'f') {
 			//mark task as completed
 			if (getPermission('tasks', 'edit', $t->task_id)) {
 				$t->task_percent_complete = 100;
@@ -288,8 +314,9 @@ if ($canEdit) {
 	$actions['m'] = $AppUI->_('Move', UI_OUTPUT_JS);
 	$actions['d'] = $AppUI->_('Delete', UI_OUTPUT_JS);
 	$actions['f'] = $AppUI->_('Mark as Finished', UI_OUTPUT_JS);
+	$actions['changeOwner'] = $AppUI->_('Change owner', UI_OUTPUT_JS);
 	foreach ($priorities as $k => $v) {
-		$actions[$k] = $AppUI->_('set priority to ' . $v, UI_OUTPUT_JS);
+		$actions[$k] = $AppUI->_('Set priority', UI_OUTPUT_JS) . ': ' . $v;
 	}
 }
 
@@ -321,13 +348,15 @@ foreach ($tasks as $t) {
 <table>
 <tr>
 	<th>Action: </th>
-	<th>Project: </th>
-	<th>Task: </th>
+	<th><span class="user-select" style="display: none;">Owner:</span></th>
+	<th><span class="project-select">Project: </span></th>
+	<th><span class="project-select">Task: </span></th>
 </tr>
 <tr>
-	<td><?php echo arraySelect($actions, 'action', '', '0'); ?></td>
-	<td><?php echo arraySelect($projects, 'new_project', ' onChange="updateTasks();"', '0'); ?></td>
-	<td><?php echo ($ts)?arraySelect($ts, 'new_task', '', '0'):''; ?></td>
+	<td><?php echo arraySelect($actions, 'action', ' onChange="updateAction();"', $action); ?></td>
+	<td><span class="user-select" style="display: none;"><?php echo arraySelect($users, 'new_owner', '', '0'); ?></span></td>
+	<td><span class="project-select"><?php echo arraySelect($projects, 'new_project', ' onChange="updateTasks();"', '0'); ?></span></td>
+	<td><span class="project-select"><?php echo ($ts)?arraySelect($ts, 'new_task', '', '0'):''; ?></span></td>
 	<td><input type="submit" class="button" value="<?php 
 echo $AppUI->_('update selected tasks'); ?>"></td>
 </tr>
@@ -353,6 +382,17 @@ echo $AppUI->_('update selected tasks'); ?>"></td>
 </table>
 
 <script language="javascript">
+	function updateAction() {
+		var action = document.forms['form'].action.value;
+		var elements = document.getElementsByTagName("span");
+		for (var i = 0; i < elements.length; ++i) {
+			if (elements[i].className.contains("project-select"))
+				elements[i].style.display = (action == "c" || action == "m") ? 'inline' : 'none';
+
+			if (elements[i].className.contains("user-select"))
+				elements[i].style.display = (action == "changeOwner") ? 'inline' : 'none';
+		}
+	}
 	function updateTasks() {
 		var proj = document.forms['form'].new_project.value;
 		var tasks = new Array();
