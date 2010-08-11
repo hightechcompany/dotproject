@@ -52,6 +52,7 @@ $q->addJoin('tasks_sum', 'ts', 'pr.project_id = ts.task_project');
 $q->addJoin('tasks_summy', 'tsm', 'pr.project_id = tsm.task_project');
 $q->addWhere('pr.project_status <> 7');
 $q->addWhere('pr.project_status <> 5');
+$q->addWhere('tsm.my_tasks > 0');
 $allowed_where = $obj->getAllowedSQL($AppUI->user_id);
 if ($allowed_where) {
 	$q->addWhere(implode(' AND ', $allowed_where));
