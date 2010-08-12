@@ -1,0 +1,283 @@
+dotProject: 	German Localisation - Deutsche Lokalisierung
+		optimized for 2.0.2 - optimiert für 2.0.2
+------------------------------------------------------------
+
+	** Given the amount of content this manual will hopefully be reworked for 3.0 :) **
+
+Overview:
+---------
+:) 	a) Aktuelles (de)
+	b) News (en)
+
+I) 	a) Installationsanweisungen (de)
+	b) Installation (en)
+
+II)	a) Hinweise (de)
+
+III)	   Richtlinien / Policy (de)
+
+
+IV)	   Credits (en)
+
+V)         ISO-8859-1 -> UTF-8 Konvertierungshinweise (de)
+
+	   Perl-Script snip for conversion
+---------
+
+
+:) a) Aktuelles
+---------------
+0) 	Die Kodierung der Lokalisationsdateien ist nun an den dotProject Standardwert 'UTF-8' angepasst worden!
+	Bitte passen Sie Ihr System (Betriebssystem, Datenbank, ggf. Browser) entsprechend an. Andernfalls ist
+	es wahrscheinlich, dass insbesondere Umlaute kryptisch dargestellt werden (z.B. böse -> b�se).
+	Man benutze die GNU Recode Funktionen, um diese Änderung rückgängig zu machen, falls notwendig.
+
+	Hierzu finden sich Hinweise am Ende dieses Dokuments, die dem Maintainer via E-Mail gesandt wurden,
+	und freundlicherweise hier veroeffentlicht werden duerfen.
+
+
+1)	Der Lokalisierungsmanager möchte hiermit die Benutzer auffordern, sich an der Weiterentwicklung der
+deutschen Lokalisierung zu beteiligen. Bestimmt gibt es einige bessere und sinnvollere Übersetzungen als die gewählten. Der Maintainer freut sich über intensive Sendung der Verbesserungsvorschläge an:
+
+				german at dotproject dot net
+
+(Bitte Richtlinien (s.u.) beachten)
+
+:) b) News
+---------------
+0)	The character encoding has changed to the gobal and dotProject standard 'UTF-8'.
+	Please modify your system (Operating system, Database, Browser) in a suitable way.
+	Otherwise it is very likely that german umlauts are not diplayed correctly (e.g. böse -> b�se).
+	If necessary use the GNU recode functions to rollback this change.
+
+	At the end of this document there are a number of hints concerning the conversion that have been
+	emailed to the maintainer.
+
+1)	Take part in the process of optimizing the german localisation! Mail your suggestions to:
+
+				german at dotproject dot net
+
+(Please see the policy (cf. down below) first)
+
+
+I) a) Installationsanweisungen:
+-------------------------------
+0) 	Man lade das deutsche Lokalisationspaket von sourceforge.net/projects/dotmods herunter
+1) 	Man entpacke (tar -xvvz de_DE????????.tar.gz) das Archiv in das dotProject Wurzelverzeichnis.
+	Es enthält die relevante Verzeichnisstruktur.
+2)	Für dotProject 2.0 und höher kann es notwendig sein, eine neue Session zu starten, um
+	zu garantieren, dass die deutschen Lokalisationsdateien erkannt werden. Eventuell ist Abmelden
+	und Wiederanmeldung notwendig.
+3)	Es bestehen nun die folgenden Optionen:
+
+	i) 	Die deutsche Sprache für sich selbst setzen (keine Administratorrechte notwendig):
+		+ Man melde sich (falls noch nicht getan) mit seinem Benutzernamen an.
+		+ Man wähle 'Über mich' vom kleinen Menü oben rechts in dotProject
+		+ Man wähle 'die Einstellungen bearbeiten' von den Brotkrümeln unterhalb der Seitenüberschrift
+		+ Man wähle 'German (Ger)' bzw. 'Deutsch (DE)' für Locale/Orts- & Sprachanpassung aus und klicke auf abschicken
+
+	Für die folgenden Optionen sind Administratorrechte notwendig:
+
+	ii)	Die deutsche Sprache für einen bestimmten, beliebigen Benutzer setzen:
+		+ Man gehe in das Benutzerverwaltungsmodul.
+		+ Man wähle den relevanten Benutzer aus der Liste und klicke auf seinen Namen
+		+ Man wähle 'die Einstellungen bearbeiten' von den Brotkrümeln unterhalb der Seitenüberschrift
+		+ Man wähle 'German (Ger)' bzw. 'Deutsch (DE)' für Locale/Orts- & Sprachanpassung aus und klicke auf abschicken
+
+	iii) 	Die deutsche Sprache für alle neuen Benutzer als Standard setzen (kann a posteriori verändert werden)
+		+ Man gehe in das Systemverwaltungsmodul.
+		+ Man wähle 'Standardeinstellungen für Benutzer'
+		+ Man wähle 'German (Ger)' bzw. 'Deutsch (DE)' für Locale/Orts- & Sprachanpassung aus und klicke auf abschicken
+
+	iv)	Zeige die Anmeldeseite in Deutsch:
+		+ Man gehe in das Systemverwaltungsmodul.
+		+ Man wähle 'Systemkonfiguration'
+		+ Man setze Host Locale bzw. Sprache für die Loginseite auf 'de' und speichere
+
+I) b) Installation:
+-------------------
+0) 	Get the german localisation archive from sourceforge.net/projects/dotmods
+1) 	Untar (tar -xvvz de_DE????????.tar.gz) the file to the dotProject root directory.
+	This archive contains the relevant diretory structure.
+2)	As with dotProject 2.0 and above it could be necessary to refresh the session in order
+	to have the new localisation files registered with dotProject. Eventually logout and relogin.
+3)	You now have the following options:
+
+	i) 	Set the german language for yourself (No system administrators permissions required):
+		+ Login with your username/password combination to dotProject
+		+ Choose 'My Info' from the upper right menu of dotProject
+		+ Choose 'user preferences' from the breadcrumb below the site header
+		+ Choose 'German (Ger)' from the Locale dropdown box and click submit
+
+	Or you must be logged in with system administrators permissions and may be allowed to:
+
+	ii)	Set the german language for a special user:
+		+ Go to the User Admin Module (Main Menu)
+		+ Choose the relevant User from the list and click his name
+		+ Choose 'user preferences' from the breadcrumb below the site header
+		+ Choose 'German (Ger)' from the Locale dropdown box and click submit
+
+	iii) 	Set the german language as default for all new users (can be overriden a posteriori)
+		+ Go to the System Admin Module (Main Menu)
+		+ Choose 'Default User Preferences'
+		+ Choose 'German (Ger)' from the Locale dropdown box and click submit
+
+	iv)	Set the german language as default for the login screen:
+		+ Go to the System Admin Module (Main Menu)
+		+ Choose 'System Configuration'
+		+ Change the Host Locale option to 'de' and save
+
+
+II a) Hinweise:
+---------------
+- Mittels $locale_char_set = 'UTF-8'; in locales.php und Bearbeitung der Übersetzung mittels
+  "recode latin1..utf-8 xxx.inc" stimmt das Ganze auch auf einem UTF-8 voreingestellten System (thanks, Goik)
+  (Dieser Hinweis ist veraltet, aber vielleicht in umgekehrter Richtung für den einen oder anderen nützlich)
+
+
+III Vorläufige Richtlinien / Preliminary Policy (Carsten Menke) - to discuss, check and enhance
+-----------------
+Während der Arbeit an der Übersetzung von dotProject haben sich bestimmte
+Übersetzungen für bestimmte englische Wörter und Ausdrucksweisen manifestiert.
+
+Um der deutschen Übersetzung einen gewissen Grad an Konsitenz zu verleihen sind in
+dieser Datei gebräuchliche Wörter, Ausdruckweisen und Schreibweisen für die
+deutsche Übersetzung von dotProject definiert.
+
+Bei der Verwendung von neuen Wörtern, Ausdrucks- und Schreibweisen sollte man darauf
+achten:
+
+1.) Wie wird diese Begrifflichkeit allgemein im Projektmanagement übersetzt
+2.) Wie wird diese Begrifflichkeit allgemein in Software Anwendungen übersetzt
+3.) Welche Schreibweise schlägt der Duden vor
+4.) Welche Übersetzung macht im deutschen am meisten Sinn
+
+Ferner sind für manche Ausdruckweisen, deutsche Übersetzungen vorhanden die den neuen Übersetzer nicht schlüssig sind
+beziehungsweise den Eindruck machen das sie falsch sind. Dies kann daher rühren:
+
+
+1.) das Original ist falsch und die deutsche Übersetzung korrekt
+2.) in der Programmierung wurde eine falsche Bedeutung für ein Wort angenommen
+    (nicht alle Programmierer von dotProject haben als Muttersprache englisch)
+    z.B. bi-weekly zu deutsch 2 wöchentlich, jedoch wurde bei der Programmierung
+    1/2 wöchentlich gemeint, deshalb auch so übersetzt
+3.) Manche Begriffe im deutschen so nicht existieren und/oder die direkte Übersetzung
+    keinen Sinn machen würde
+4.) An der Stelle an der die Übersetzung in dotProject aufgerufen wird, sie nur in dieser
+    Form verständlich ist
+
+Im Zweifelsfall gilt, besser einmal zuviel den Maintainer fragen als einmal zu wenig.
+
+Nachfolgend eine Auflistung bisheriger Definitionen, für die rechte Seite (deutsche Übersetzung) gilt,
+das die Priorität von links nach rechts absteigend ist.
+
+D.h. man sollte, wenn möglich das am meist links stehende Wort für die deutsche Übersetzung verwenden
+Beispiel: show -> anzeigen,zeigen, hier sollte nach Möglichkeit "anzeigen" für die deutsche Übersetzung
+gewählt werden.
+
+
+Original                                    deutsche Übersetzung
+--------                                    --------------------
+administration                  =>          Verwaltung
+administrative                  =>          administrativ
+application                     =>          Anwendung
+child,children                  =>          untergeordnet(e)
+complete                        =>          vollständig
+completed                       =>          vervollständigt
+e-mail,email,Mail,mail          =>          E-Mail
+log                             =>          Protokoll,Protokolleintrag,protokollieren
+on hold                         =>          angehalten
+parent                          =>          übergeordnet
+reset                           =>          zurücksetzen
+report                          =>          Bericht,berichten
+show                            =>          anzeigen,zeigen
+submit                          =>          absenden
+tab,tabbed                      =>          Registerkarte(n)
+view                            =>          ansehen,sehen
+
+------------ end of policy -----------
+
+
+IV) Credits:
+-------------
+Carsten Menke <menke@smp-synergie.de> has contributed a considerable amount of the improvements, review and enhancements for the 2.0.2 compliant version. The maintainer especially thanks him for all the fruitful discussions and
+ideas.
+
+
+V) ISO-8859-1 -> UTF-8 Konvertierungshinweise (Carsten Menke)
+-------------------------------------------------------------
+Als Alternative zu den GNU Recode Funktionen oder 'iconv -f ISO-8859-1 -t UTF8 inputfile.sql > outputfile.sql':
+
+> Backup der Datenbank machen:
+>
+> mysqldump -u dotproject -p --database dotproject > dotproject.sql
+>
+> Danach die Datenbank dotproject zur Sicherheit löschen (man achte
+> darauf das das Backup auch funktioniert hat)
+>
+> mysql -u root -p <<EOF
+> DROP DATABASE dotproject;
+> EOF
+>
+> Das Script latin2utf.pl aufrufen
+>
+> ./latin2utf.pl dotproject.sql > dotproject-utf8.sql
+>
+> Die konvertierte Version wieder einspielen
+>
+> mysql -u root -p < dotproject-utf8.sql
+>
+> Gruß
+>
+> Carsten
+>--
+>smp Synergie
+>Carsten Menke
+>Maschine-Maschine Kommunikation
+>August-Schröder-Straße 10
+>
+>33602 Bielefeld
+>Tel. 0163/796 37 43
+>
+>[latin2utf.pl  application/x-perl (1175 bytes)]
+
+------------ latin2utf.pl script to extract--------
+#!/usr/bin/perl -w
+
+#
+# This Perl script translates strings from Latin-1
+# (aka ISO-8859-1) to UTF-8.
+#
+# Copyright (C) 2002 Thomas Weckert (info@weckert.org)
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#
+
+open( INFILE, "<$ARGV[0]" );
+@all_lines = <INFILE>;
+close( INFILE );
+
+for $line (@all_lines) {
+    $line =~
+		s/([\x80-\xff])/
+			chr((((ord($1) & 0xc0) >> 6) | 0xc0)) .
+			chr(( (ord($1) & 0x3f)       | 0x80))
+			/gex;
+
+    print $line;
+};
+
+__END__
+----------- end of latin2utf.pl script -----
