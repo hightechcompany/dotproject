@@ -25,8 +25,8 @@ $titleBlock->show();
 // else users would be able to arbitrarily run 'bad' functions
 if ($canEdit) {
 ?>
-function delIt(id) {
-	if (confirm('Are you sure you want to delete this?')) {
+function delIt(id, name) {
+	if (confirm('Are you sure you want to delete \'' + name + '\'?')) {
 		f = document.sysValFrm;
 		f.del.value = 1;
 		f.sysval_id.value = id;
@@ -71,10 +71,10 @@ function showRow($id=0, $key=0, $title='', $value='') {
 		}
 		$s .= '<td valign="top">'.$keys[$key].'</td>'.$CR;
 		$s .= '<td valign="top">'.dPformSafe($title).'</td>'.$CR;
-		$s .= '<td valign="top" colspan="2">'.$value.'</td>'.$CR;
+		$s .= '<td valign="top" colspan="2">'.nl2br(dPformSafe($value)).'</td>'.$CR;
 		$s .= '<td valign="top" width="16">';
 		if ($canEdit) {
-			$s .= '<a href="javascript:delIt('.$id.')" title="'.$AppUI->_('delete').'">'
+		  $s .= '<a href="javascript:delIt('.$id.', \''.addslashes(htmlentities($title)).'\')" title="'.$AppUI->_('delete').'">'
 				. dPshowImage('./images/icons/stock_delete-16.png', 16, 16, '')
 				. '</a>';
 		}

@@ -42,8 +42,8 @@ $crumbs['?m=system'] = 'System Admin';
 // else users would be able to arbitrarily run 'bad' functions
 if ($canDelete) {
 ?>
-function delIt(id) {
-	if (confirm('Are you sure you want to delete this?')) {
+function delIt(id, name) {
+	if (confirm('Are you sure you want to delete \'' + name + '\'?')) {
 		f = document.roleFrm;
 		f.del.value = 1;
 		f.role_id.value = id;
@@ -94,7 +94,7 @@ function showRow($role=null) {
 			$s .= '</a>';
 		}
 		if ($canDelete) {
-			$s .= '<a href="javascript:delIt(' . $id . ')">';
+			$s .= '<a href="javascript:delIt(' . $id . ', \'' . addslashes(htmlentities($name)) . '\')">';
 			$s .= dPshowImage('images/icons/stock_delete-16.png');
 			$s .= "</a>";
 		}
