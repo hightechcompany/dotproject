@@ -62,15 +62,14 @@ $sortByName = (($sortByName != '0') ? '1' : $sortByName);
 
 ////////////////////////end mod to show sort by name as default//////////////////
 if ($a == 'todo') {
-	if (isset($_POST['show_form'])) {
-		$AppUI->setState('TaskDayShowArc', dPgetParam($_POST, 'showArcProjs', 0));
-		$AppUI->setState('TaskDayShowLow', dPgetParam($_POST, 'showLowTasks', 0));
-		$AppUI->setState('TaskDayShowHold', dPgetParam($_POST, 'showHoldProjs', 0));
-		$AppUI->setState('TaskDayShowDyn', dPgetParam($_POST, 'showDynTasks', 0));
-		$AppUI->setState('TaskDayShowPin', dPgetParam($_POST, 'showPinned', 0));
-	}
+        $AppUI->setState('TaskDayShowArc', dPgetParam($_POST, 'showArcProjs', 0));
+	$AppUI->setState('TaskDayShowLow', dPgetParam($_POST, 'showLowTasks', 0));
+	$AppUI->setState('TaskDayShowHold', dPgetParam($_POST, 'showHoldProjs', 0));
+	$AppUI->setState('TaskDayShowDyn', dPgetParam($_POST, 'showDynTasks', 0));
+	$AppUI->setState('TaskDayShowPin', dPgetParam($_POST, 'showPinned', 0));
+
 	$showArcProjs = $AppUI->getState('TaskDayShowArc', 0);
-	$showLowTasks = $AppUI->getState('TaskDayShowLow', 1);
+	$showLowTasks = $AppUI->getState('TaskDayShowLow', 0);
 	$showHoldProjs = $AppUI->getState('TaskDayShowHold', 0);
 	$showDynTasks = $AppUI->getState('TaskDayShowDyn', 0);
 	$showPinned = $AppUI->getState('TaskDayShowPin', 0);
@@ -314,7 +313,7 @@ echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' .
 <input type="hidden" name="printpdf" value="<?php echo $printpdf; ?>" />
 <input type="hidden" name="printpdfhr" value="<?php echo $printpdfhr; ?>" />
 <input type="hidden" name="caller" value="<?php echo $a; ?>" />
-<table border="0" cellpadding="2" cellspacing="0" width="80%" class="tbl" style="margin: 0px auto;">
+<table border="0" cellpadding="2" cellspacing="1" width="80%" class="tbl" style="margin: 0px auto;">
   <tr><th><?php echo $AppUI->_('Date'); ?></th></tr>
   <tr>
     <td style="text-align: center;">
@@ -325,14 +324,14 @@ echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' .
        <div style="text-align: center; margin: 10px auto;">
        <?php if ($display_option != "all") { ?>
            <a href="javascript:scrollPrev()">
-	      <img src="./images/prev.gif" width="16" height="16" alt="<?php echo $AppUI->_('previous');?>" border="0" />
+	      <img src="./images/prev.gif" width="16" height="16" alt="<?php echo $AppUI->_('previous');?>" border="0" style="margin-right: 10px;" />
 	   </a>
        <?php }
 
        echo $AppUI->_('From');?>:
        <input type="hidden" name="sdate" value="<?php echo $start_date->format(FMT_TIMESTAMP_DATE);?>" />
        <input type="text" class="text" name="show_sdate" value="<?php echo $start_date->format($df);?>" size="12" disabled="disabled" />
-       <a href="javascript:popCalendar('sdate')">
+       <a href="javascript:popCalendar('sdate')" style="margin-right: 15px;">
 	 <img src="./images/calendar.gif" width="24" height="12" alt="" border="0" />
        </a>
 
@@ -345,7 +344,7 @@ echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' .
 
       <?php if ($display_option != "all") { ?>
         <a href="javascript:scrollNext()">
-	   <img src="./images/next.gif" width="16" height="16" alt="<?php echo $AppUI->_('next');?>" border="0" />
+	   <img src="./images/next.gif" width="16" height="16" alt="<?php echo $AppUI->_('next');?>" border="0" style="margin-left: 10px;" />
 	</a>
       <?php } ?>
       </div>
@@ -353,7 +352,7 @@ echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' .
   </tr>
 </table>
 <br />
-<table border="0" align="center" class="tbl" border="0" cellpadding="2" cellspacing="0" style="min-width:990px">
+<?php /*<table border="0" align="center" class="tbl" border="0" cellpadding="2" cellspacing="1" style="min-width:990px">
 <tr> <!--  Task selection options plus Print to PDF go in this row -->
 	<td align="right"><em>Task Filter:</em></td>
 <!--  task filter  -->
@@ -394,158 +393,104 @@ echo htmlspecialchars('m=' . $m . '&a=' . $a . '&tab=' . $tab . '&project_id=' .
 		</table>
 	</td>
 
-</tr>
+</tr> */ ?>
 
 <?php /* <tr align="left"> <!--  Additional Gantt FOrmatting options go in this row. (show/hide behaviour) -->
 	<th colspan="4" align="left"><em><a style="color: white" href="javascript:doMenu('ganttoptions')" id="xganttoptions">Show Additional Gantt Options</a></em></th>
 </tr> */ ?>
-<table border="0" cellpadding="2" cellspacing="0" width="80%" class="tbl" style="margin: 0px auto;">
-  <tr><th><?php echo $AppUI->_('Tasks'); ?></th></tr>
-  <tr>
+
+<table border="0" cellpadding="2" cellspacing="1" width="80%" class="tbl" style="margin: 0px auto;">
+  <tr><th colspan="2"><?php echo $AppUI->_('Options'); ?></th></tr>
+  <tr align="left">
+    <td colspan="2" align="center" style="padding: 5px;">
+	 <!-- sort tasks by name (instead of date) -->
+	 <span style="white-space: nowrap;">
+	 <input type="checkbox" name="sortByName" id="sortByName" <?php echo (($sortByName == 1) ? 'checked="checked"' : ''); ?> />
+         <label for="sortByName"><?php echo $AppUI->_('Sort by Name'); ?></label>
+	 </span>
+
+	 <!-- show task names only -->
+	 <span style="white-space: nowrap; margin-left: 10px;">
+	 <input type="checkbox" name="showTaskNameOnly" id="showTaskNameOnly" <?php echo (($showTaskNameOnly == 1) ? 'checked="checked"' : ''); ?> />
+	 <label for="showTaskNameOnly"><?php echo $AppUI->_('Show names only'); ?></label>
+	 </span>
+
+	 <!--  use monoSpace Font (recommended when showing task names only) -->
+	 <span style="white-space: nowrap; margin-left: 10px;">
+	 <input type="checkbox" name="monospacefont" id="monospacefont" <?php echo (($monospacefont == 1) ? 'checked="checked"' : ''); ?> />
+	 <label for="monospacefont"><?php echo $AppUI->_('Use MonoSpace Font'); ?></label>
+	 </span>
+
+	 <!--  add links to gantt -->
+	 <span style="white-space: nowrap; margin-left: 10px;">
+	 <input type="checkbox" name="addLinksToGantt" id="addLinksToGantt" <?php echo (($addLinksToGantt == 1) ? 'checked="checked"' : ''); ?> />
+	 <label for="addLinksToGantt"><?php echo $AppUI->_('Add links to Gantt'); ?></label>
+	 </span>
+
+	 <!-- show no milestones -->
+	 <span style="white-space: nowrap; margin-left: 10px;">
+	 <input type="checkbox" name="showNoMilestones" id="showNoMilestones" <?php echo (($showNoMilestones == 1) ? 'checked="checked"' : ''); ?> />
+	 <label for="showNoMilestones"><?php echo $AppUI->_('Hide Milestones'); ?></label>
+	 </span>
+
+	 <!-- show horizontal grid -->
+	 <span style="white-space: nowrap; margin-left: 10px;">
+	 <input type="checkbox" name="showhgrid" id="showhgrid" <?php echo (($showhgrid == 1) ? 'checked="checked"' : ''); ?> />
+	 <label for="showhgrid"><?php echo $AppUI->_('Show horizontal grid'); ?></label>
+	 </span>
+
+	 <span style="white-space: nowrap; margin-left: 10px;">
+	 <input type="checkbox" name="showLabels" id="showLabels" <?php	echo (($showLabels == 1) ? 'checked="checked"' : ''); ?> />
+	 <label for="showLabels"><?php echo $AppUI->_('Show captions'); ?></label>
+	 </span>
+
+	 <span style="white-space: nowrap; margin-left: 10px;">
+	 <input type="checkbox" name="showWork" id="showWork" <?php echo (($showTaskNameOnly == 1) ? 'disabled="disabled"': ''); echo (($showWork == 1) ? 'checked="checked"' : ''); ?> />
+	 <label for="showWork"><?php echo $AppUI->_('Show work instead of duration (Hours)'); ?></label>
+	 </span>
+    </td>
   </tr>
-<tr align="left">
-	<td colspan="4">
-	<table border="0" id="ganttoptions" width="100%" align="center"><tr><td width="100%">
-	<table  border="0" cellpadding="2" cellspacing="0" width="100%" align="center">
-			<tr>
-				<td>&nbsp;Tasks&nbsp;:</td>
+  <?php if($a == 'todo') { ?>
+  <tr align="left">
+    <td colspan="2" align="center" style="padding: 5px;">
+	 <span style="white-space: nowrap;">
+	 <input type="checkbox" name="showPinned" id="showPinned" <?php echo $showPinned ? 'checked="checked"' : ''; ?> />
+	 <label for="showPinned"><?php echo $AppUI->_('Pinned Only'); ?></label>
+	 </span>
 
-			<!-- sort tasks by name (instead of date) -->
-				<td valign="top">
-					<input type="checkbox" name="sortByName" id="sortByName" <?php echo (($sortByName == 1) ? 'checked="checked"' : ''); ?> />
-					<label for="sortByName"><?php echo $AppUI->_('Sort by Name'); ?></label>
-				</td>
+	 <span style="white-space: nowrap; margin-left: 10px;">
+	 <input type="checkbox" name="showArcProjs" id="showArcProjs" <?php echo $showArcProjs ? 'checked="checked"' : ''; ?> />
+	 <label for="showArcProjs"><?php echo $AppUI->_('Archived Projects'); ?></label>
+	 </span>
 
-			<!-- show task names only -->
-				<td valign="top">
-					<input type="checkbox" name="showTaskNameOnly" id="showTaskNameOnly" <?php echo (($showTaskNameOnly == 1) ? 'checked="checked"' : ''); ?> />
-					<label for="showTaskNameOnly"><?php echo $AppUI->_('Show names only'); ?></label>
-				</td>
+	 <span style="white-space: nowrap; margin-left: 10px;">
+	 <input type="checkbox" name="showHoldProjs" id="showHoldProjs" <?php echo $showHoldProjs ? 'checked="checked"' : ''; ?> />
+	 <label for="showHoldProjs"><?php echo $AppUI->_('Projects on Hold'); ?></label>
+	 </span>
 
-			<!--  use monoSpace Font (recommended when showing task names only) -->
-				<td valign="top">
-					<input type="checkbox" name="monospacefont" id="monospacefont" <?php echo (($monospacefont == 1) ? 'checked="checked"' : ''); ?> />
-					<label for="monospacefont"><?php echo $AppUI->_('Use MonoSpace Font'); ?></label>
-				</td>
+	 <span style="white-space: nowrap; margin-left: 10px;">
+         <input type="checkbox" name="showDynTasks" id="showDynTasks" <?php echo $showDynTasks ? 'checked="checked"' : ''; ?> />
+	 <label for="showDynTasks"><?php echo $AppUI->_('Dynamic Tasks'); ?></label>
+	 </span>
 
-			<!--  add links to gantt -->
-				<td valign="top">
-					<input type="checkbox" name="addLinksToGantt" id="addLinksToGantt" <?php echo (($addLinksToGantt == 1) ? 'checked="checked"' : ''); ?> />
-					<label for="addLinksToGantt"><?php echo $AppUI->_('Add links to Gantt'); ?></label>
-				</td>
+	 <span style="white-space: nowrap; margin-left: 10px;">
+	 <input type="checkbox" name="showLowTasks" id="showLowTasks" <?php echo $showLowTasks ? 'checked="checked"' : ''; ?> />
+	 <label for="showLowTasks"><?php echo $AppUI->_('Low Priority Tasks'); ?></label>
+	 </span>
+     </td>
+  </tr>
+  <?php } ?>
 
-				<td >&nbsp;	</td>
-			</tr>
-			<tr class="tbl" >
-				<td>&nbsp;Other&nbsp;:</td>
-
-			<!-- show no milestones -->
-				<td class="alternate" valign="top">
-					<input type="checkbox" name="showNoMilestones" id="showNoMilestones" <?php echo (($showNoMilestones == 1) ? 'checked="checked"' : ''); ?> />
-					<label for="showNoMilestones"><?php echo $AppUI->_('Hide Milestones'); ?></label>
-				</td>
-
-			<!-- show horizontal grid -->
-				<td class="alternate" valign="top">
-					<input type="checkbox" name="showhgrid" id="showhgrid" <?php echo (($showhgrid == 1) ? 'checked="checked"' : ''); ?> />
-					<label for="showhgrid"><?php echo $AppUI->_('Show horizontal grid'); ?></label>
-				</td>
-
-				<td  class="alternate" valign="top">
-					<input type="checkbox" name="showLabels" id="showLabels" <?php	echo (($showLabels == 1) ? 'checked="checked"' : ''); ?> />
-					<label for="showLabels"><?php echo $AppUI->_('Show captions'); ?></label>
-				</td>
-
-				<td class="alternate" valign="top">
-					<input type="checkbox" name="showWork" id="showWork" <?php echo (($showTaskNameOnly == 1) ? 'disabled="disabled"': ''); echo (($showWork == 1) ? 'checked="checked"' : ''); ?> />
-					<label for="showWork"><?php echo $AppUI->_('Show work instead of duration (Hours)'); ?></label>
-<!--				</td>-->
-
-<!--			<td class="alternate" valign="top">-->
-<!--				<input type="checkbox" name="showWork_days" id="showWork_days" <?php //echo (($showWork_days == 1) ? 'checked="checked"' : ''); ?> />-->
-<!--				<label for="showWork_days"><?php //echo $AppUI->_('Show work instead of duration (Days)'); ?></label>-->
-				</td>
-				<td class="alternate" align="right">
-				</td>
-			</tr>
-
-<?php //////////////////// New checkboxes with additional formatting go above, this is with the view of displaying the options in an ajax box in the future //////////////////////////////////////////
-?>
-			<?php if($a == 'todo') { ?>
-			<input type="hidden" name="show_form" value="1" />
-			<tr>
-					<td>&nbsp;To Do Options:&nbsp;</td>
-					<td  valign="bottom" nowrap="nowrap">
-						<input type="checkbox" name="showPinned" id="showPinned" <?php echo $showPinned ? 'checked="checked"' : ''; ?> />
-						<label for="showPinned"><?php echo $AppUI->_('Pinned Only'); ?></label>
-					</td>
-					<td valign="bottom" nowrap="nowrap">
-						<input type="checkbox" name="showArcProjs" id="showArcProjs" <?php echo $showArcProjs ? 'checked="checked"' : ''; ?> />
-						<label for="showArcProjs"><?php echo $AppUI->_('Archived Projects'); ?></label>
-					</td>
-					<td  valign="bottom" nowrap="nowrap">
-						<input type="checkbox" name="showHoldProjs" id="showHoldProjs" <?php echo $showHoldProjs ? 'checked="checked"' : ''; ?> />
-						<label for="showHoldProjs"><?php echo $AppUI->_('Projects on Hold'); ?></label>
-					</td>
-					<td valign="bottom" nowrap="nowrap">
-						<input type="checkbox" name="showDynTasks" id="showDynTasks" <?php echo $showDynTasks ? 'checked="checked"' : ''; ?> />
-						<label for="showDynTasks"><?php echo $AppUI->_('Dynamic Tasks'); ?></label>
-					</td>
-					<td valign="bottom" nowrap="nowrap">
-						<input type="checkbox" name="showLowTasks" id="showLowTasks" <?php echo $showLowTasks ? 'checked="checked"' : ''; ?> />
-						<label for="showLowTasks"><?php echo $AppUI->_('Low Priority Tasks'); ?></label>
-					</td>
-			</tr>
-		<?php } ?>
-	</table></td></tr></table>
-</td></tr>
-</table>
-
-
-<table border="0" cellpadding="2" cellspacing="0" width="80%" class="tbl" style="margin: 0px auto;">
   <tr>
-      <td style="text-align: right; padding-right: 10px;">
-          <input type="button" style="width: 110px;" class="button" value="<?php echo $AppUI->_('Refresh');?>" onclick='javascript:submitIt()' />
-      </td>
-      <td style="text-align: left; padding-left: 10px;">
-          <input type="button" style="width: 110px;" class="button" value="<?php echo $AppUI->_('Print PDF');?>" onclick='javascript:printPDF()' />
+      <td style="text-align: center; padding: 10px;">
+	  <input type="button" style="width: 110px; margin-right: 10px;" class="button" value="<?php echo $AppUI->_('Refresh');?>" onclick='javascript:submitIt()' />
+          <input type="button" style="width: 110px; margin-left: 10px;" class="button" value="<?php echo $AppUI->_('Print PDF');?>" onclick='javascript:printPDF()' />
       </td>
   </tr>
 </table>
 
 </form>
 </div> <!-- end of div used to show/hide formatting options -->
-<br />
-<br />
-<table cellspacing="0" cellpadding="2" border="1" align="center" bgcolor="white">
-<tr><th colspan="9" > Gantt chart key: </th></tr>
-<tr>
-	<td align="right"><?php echo $AppUI->_('Dynamic Task')?>&nbsp;</td>
-	<td align="center"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/task_dynamic.png" alt=""/></td>
-	<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $AppUI->_('Task (planned)')?>&nbsp;</td>
-	<td align="center"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/task_planned.png" alt=""/></td>
-	<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $AppUI->_('Task (in proggress)')?>&nbsp;</td>
-	<td align="center"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/task_in_progress.png" alt=""/></td>
-	<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $AppUI->_('Task (completed)')?>&nbsp;</td>
-	<td align="center"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/task_completed.png" alt=""/></td>
-</tr>
-<?php
-if ($showNoMilestones != 1) {
-?>
-<tr>
-	<td align="right"><?php echo $AppUI->_('Milestone (planned)')?>&nbsp;</td>
-	<td align="center"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/milestone_planned.png" alt=""/></td>
-	<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $AppUI->_('Milestone (completed)')?>&nbsp;</td>
-	<td align="center"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/milestone_completed.png" alt=""/></td>
-	<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $AppUI->_('Milestone (in progress)')?>&nbsp;</td>
-	<td align="center"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/milestone_in_progress.png" alt=""/></td>
-	<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $AppUI->_('Milestone (overdue)')?>&nbsp;</td>
-	<td align="center"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/milestone_overdue.png" alt=""/></td>
-</tr>
-<?php
-}
-?>
-</table>
 <br />
 <br />
 <table cellspacing="0" cellpadding="0" border="1" align="center">
@@ -663,6 +608,37 @@ if ( $printpdf == 1 || $printpdfhr == 1) {
 	include 'gantt_pdf.php';
 $_POST['printpdf']= 0; $printpdf = 0;
 $_POST['printpdfhr']= 0; $printpdfhr = 0;
+}
+?>
+</table>
+<br />
+<br />
+<table border="0" cellpadding="2" cellspacing="0" width="80%" class="tbl" style="margin: 0px auto;">
+  <tr><th colspan="8"><?php echo $AppUI->_('Gantt chart key'); ?></th></tr>
+  <tr>
+	<td align="left" style="border: 1px solid black; border-right: 0px; padding-left: 10px;"><?php echo $AppUI->_('Dynamic Task')?>&nbsp;</td>
+	<td align="center" style="border: 1px solid black; border-right: 0px; border-left: 0px;"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/task_dynamic.png" alt=""/></td>
+	<td align="left" style="border: 1px solid black; border-right: 0px; padding-left: 10px;"><?php echo $AppUI->_('Task (planned)')?>&nbsp;</td>
+	<td align="center" style="border: 1px solid black; border-right: 0px; border-left: 0px;"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/task_planned.png" alt=""/></td>
+	<td align="left" style="border: 1px solid black; border-right: 0px; padding-left: 10px;"><?php echo $AppUI->_('Task (in proggress)')?>&nbsp;</td>
+	<td align="center" style="border: 1px solid black; border-right: 0px; border-left: 0px;"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/task_in_progress.png" alt=""/></td>
+	<td align="left" style="border: 1px solid black; border-right: 0px; padding-left: 10px;"><?php echo $AppUI->_('Task (completed)')?>&nbsp;</td>
+	<td align="center" style="border: 1px solid black; border-left: 0px;"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/task_completed.png" alt=""/></td>
+</tr>
+<?php
+if ($showNoMilestones != 1) {
+?>
+<tr>
+	<td align="left" style="border: 1px solid black; border-right: 0px; border-top: 0px; padding-left: 10px;"><?php echo $AppUI->_('Milestone (planned)')?>&nbsp;</td>
+	<td align="center" style="border-bottom: 1px solid black;"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/milestone_planned.png" alt=""/></td>
+	<td align="left" style="border-bottom: 1px solid black; border-left: 1px solid black; padding-left: 10px;"><?php echo $AppUI->_('Milestone (completed)')?>&nbsp;</td>
+	<td align="center" style="border-bottom: 1px solid black;"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/milestone_completed.png" alt=""/></td>
+	<td align="left" style="border-bottom: 1px solid black; border-left: 1px solid black; padding-left: 10px;"><?php echo $AppUI->_('Milestone (in progress)')?>&nbsp;</td>
+	<td align="center" style="border-bottom: 1px solid black;"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/milestone_in_progress.png" alt=""/></td>
+	<td align="left" style="border-bottom: 1px solid black; border-left: 1px solid black; padding-left: 10px;"><?php echo $AppUI->_('Milestone (overdue)')?>&nbsp;</td>
+	<td align="center" style="border-bottom: 1px solid black; border-right: 1px solid black;"><img src="<?php echo DP_BASE_URL;?>/modules/tasks/images/milestone_overdue.png" alt=""/></td>
+</tr>
+<?php
 }
 ?>
 </table>
