@@ -98,10 +98,6 @@ class CDate extends Date {
 		return dPsgn($comp_value);
 	}
 
-	function after($date) {
-		return parent::after(new Date($date));
-	}
-
 
 /**
 * Adds (+/-) a number of days to the current date.

@@ -41,6 +41,7 @@ define("FF_AHRON",46);
 
 // Dejavu-fonts http://sourceforge.net/projects/dejavu
 define("FF_DV_SANSSERIF",47);
+define("FF_DEJAVU",47);
 define("FF_DV_SERIF",48);
 define("FF_DV_SANSSERIFMONO",49);
 define("FF_DV_SERIFCOND",50);
