@@ -27,6 +27,9 @@ $loginFromPage = 'index.php';
 require_once 'base.php';
 
 clearstatcache();
+if (isset($_SERVER['DOTPROJECT_OVERLAY']) && is_file($_SERVER['DOTPROJECT_OVERLAY'] . '/config.php')) {
+	require_once $_SERVER['DOTPROJECT_OVERLAY'] . '/config.php';
+} else
 if (is_file(DP_BASE_DIR . '/includes/config.php')) {
 	require_once DP_BASE_DIR . '/includes/config.php';
 
