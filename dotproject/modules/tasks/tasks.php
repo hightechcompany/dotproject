@@ -190,8 +190,11 @@ $join .= (' LEFT JOIN task_log AS tlog ON tlog.task_log_task = tasks.task_id '
 
 // to figure out if a file is attached to task
 $join .= ' LEFT JOIN files on tasks.task_id = files.file_task';
-$join .= ' LEFT JOIN user_task_pin as pin ON tasks.task_id = pin.task_id AND pin.user_id = ';
-$join .= $user_id ? $user_id : $AppUI->user_id;
+
+if ($user_id != '0') {
+  $join .= ' LEFT JOIN user_task_pin as pin ON tasks.task_id = pin.task_id AND pin.user_id = ';
+  $join .= $user_id ? $user_id : $AppUI->user_id;
+}
 
 $where = $project_id ? ' task_project = '.$project_id : 'project_status <> 7';
 
@@ -205,7 +208,9 @@ switch ($f) {
 	case 'all':
 		break;
 	case 'myfinished7days':
-		$where .= ' AND user_tasks.user_id = '.$user_id;
+		if ($user_id != '0') {
+		  $where .= ' AND user_tasks.user_id = '.$user_id;
+		}
 	case 'allfinished7days':		 // patch 2.12.04 tasks finished in the last 7 days
 		$from = 'user_tasks, '.$from;
 		$where .= (' AND task_project = projects.project_id AND user_tasks.task_id = tasks.task_id '
@@ -221,7 +226,9 @@ switch ($f) {
 		$where .= ' AND tasks.task_id IN (' . implode(',', $childrenlist) . ')';
 		break;
 	case 'myproj':
-		$where .= ' AND project_owner = ' . $user_id;
+		if ($user_id != '0') {
+		  $where .= ' AND project_owner = ' . $user_id;
+		}
 		break;
 	case 'mycomp':
 		if (!($AppUI->user_company)) {
@@ -231,10 +238,15 @@ switch ($f) {
 		break;
 	case 'myunfinished':
 		$from = 'user_tasks, '.$from;
+		
+		if ($user_id != '0') {
+		  $where .= ' AND user_tasks.user_id = ' . $user_id;
+		}
+
 		// This filter checks all tasks that are not already in 100%
 		// and the project is not on hold nor completed
 		// patch 2.12.04 finish date required to be consider finish
-		$where .= (' AND task_project = projects.project_id AND user_tasks.user_id = ' . $user_id 
+		$where .= (' AND task_project = projects.project_id' 
 		           . ' AND user_tasks.task_id = tasks.task_id ' 
 		           . "AND (task_percent_complete < 100 OR task_end_date = '') "
 		           . 'AND projects.project_status <> 7 AND projects.project_status <> 4 ' 
@@ -253,12 +265,15 @@ switch ($f) {
 		$where .= ' AND user_tasks.task_id IS NULL';
 		break;
 	case 'taskcreated':
-		$where .= ' AND task_owner = ' . $user_id;
+		if ($user_id != '0') {
+		  $where .= ' AND task_owner = ' . $user_id;
+		}
 		break;
  default:
-		$from = 'user_tasks, '.$from;
-		$where .= (' AND task_project = projects.project_id AND user_tasks.user_id = ' . $user_id 
-		           . ' AND user_tasks.task_id = tasks.task_id');
+		if ($user_id != '0') {
+		  $from = 'user_tasks, '.$from;
+		  $where .= (' AND task_project = projects.project_id AND user_tasks.task_id = tasks.task_id AND user_tasks.user_id = ' . $user_id);
+		}
 		break;
 }
 
@@ -308,14 +323,28 @@ if (count($allowedChildrenTasks)) {
 // echo "<pre>$where</pre>";
 
 // Filter by company
-if (! $min_view && $f2 != 'all') {
+if (! $min_view && $company_id != 'all') {
 	$join .= ' LEFT JOIN companies ON company_id = projects.project_company';
-	$where .= ' AND company_id = ' . intval($f2);
+	$where .= ' AND company_id = ' . intval($company_id);
+}
+// Filter by department
+elseif (! $min_view && isset($department)) {
+	$dept_ids = array();
+	$q->addTable('departments');
+	$q->addQuery('dept_id, dept_parent');
+	$q->addOrder('dept_parent,dept_name');
+	$rows = $q->loadList();
+	addDeptId($rows, $department);
+	$dept_ids[] = $department;
+	$q->clear();
+
+	$join .= ' LEFT JOIN project_departments ON project_departments.project_id = projects.project_id';
+	$where .= ' AND department_id in (' . implode(',',$dept_ids) . ')';
 }
 
 // patch 2.12.04 ADD GROUP BY clause for assignee count
 $tsql = ('SELECT ' . $select . ' FROM (' . $from . ') ' . $join 
-		 . ' WHERE ' . $where . ' GROUP BY task_id ORDER BY project_id, task_start_date');
+		 . ' WHERE ' . $where . ' GROUP BY task_id ORDER BY projects.project_id, task_start_date');
 
 //echo "<pre>$tsql</pre>";
 

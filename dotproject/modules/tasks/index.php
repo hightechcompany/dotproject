@@ -23,10 +23,22 @@ if (isset($_POST['f'])) {
 }
 $f = $AppUI->getState('TaskIdxFilter') ? $AppUI->getState('TaskIdxFilter') : 'myunfinished';
 
-if (isset($_POST['f2'])) {
-	$AppUI->setState('CompanyIdxFilter', $_POST['f2']);
+$company_prefix = "company_";
+if (isset($_POST['department'])) {
+	$AppUI->setState('ProjIdxDepartment', $_POST['department']);
 }
-$f2 = $AppUI->getState('CompanyIdxFilter') ? $AppUI->getState('CompanyIdxFilter') : 'all';
+$department = (($AppUI->getState('ProjIdxDepartment') !== NULL) 
+               ? $AppUI->getState('ProjIdxDepartment') 
+               : $company_prefix . '0');
+
+//if $department contains the $company_prefix string that it's requesting a company
+// and not a department.  So, clear the $department variable, and populate the $company_id variable.
+$company_id = 'all';
+if (!(mb_strpos($department, $company_prefix)===false)) {
+	$company_id = mb_substr($department,mb_strlen($company_prefix));
+	$AppUI->setState('ProjIdxCompany', $company_id);
+	unset($department);
+}
 
 if (isset($_GET['project_id'])) {
 	$AppUI->setState('TaskIdxProject', $_GET['project_id']);
@@ -79,14 +91,41 @@ if (getPermission('admin', 'view')) {
 }
 
 $titleBlock->addCell();
-$titleBlock->addCell($AppUI->_('Company') . ':');
-$titleBlock->addCell(arraySelect($filters2, 'f2', 
-                                 'size=1 class=text onChange="document.companyFilter.submit();"', 
-                                 $f2, false), '', 
-                     '<form action="?m=tasks" method="post" name="companyFilter">', '</form>'
-);
+$titleBlock->addCell($AppUI->_('Company') . '/' . $AppUI->_('Department') . ':');
 
+//get list of all departments, filtered by the list of permitted companies.
+$q->clear();
+$q->addTable('companies', 'c');
+$q->addQuery('c.company_id, c.company_name, dep.*');
+$q->addJoin('departments', 'dep', 'c.company_id = dep.dept_company');
+$q->addOrder('c.company_name, dep.dept_parent, dep.dept_name');
+$rows = $q->loadList();	
 
+//display the select list
+$cBuffer = '<select name="department" onChange="document.companyFilter.submit()" class="text">';
+$cBuffer .= ('<option value="' . $company_prefix . 'all" style="font-weight:bold;">' . $AppUI->_('All') 
+             . '</option>'."\n");
+$company = '';
+foreach ($rows as $row) {
+	if ($row['dept_parent'] == 0) {
+		if ($company != $row['company_id']) {
+			$cBuffer .= ('<option value="' . $AppUI->___($company_prefix . $row['company_id']) 
+			             . '" style="font-weight:bold;"' 
+			             . (($company_id == $row['company_id']) ? 'selected="selected"' : '') 
+			             . '>' . $AppUI->___($row['company_name']) . '</option>' . "\n");
+			$company = $row['company_id'];
+		}
+		
+		if ($row['dept_parent'] != null) {
+			showchilddept($row);
+			findchilddept($rows, $row['dept_id']);
+		}
+	}
+}
+$cBuffer .= '</select>';
+
+$titleBlock->addCell(('<form action="?m=tasks" method="post" name="companyFilter">' . "\n" 
+                      . $cBuffer . "\n" .  '</form>' . "\n"));
 
 $titleBlock->addCell();
 if ($canEdit && $project_id) {
