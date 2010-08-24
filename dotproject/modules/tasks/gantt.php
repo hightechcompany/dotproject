@@ -12,7 +12,7 @@ if (!defined('DP_BASE_DIR')){
 /*
  *  First clear up the temp dir of previous gantt.png files used to generate hot gantts
  */
-foreach (glob("./files/temp/gantt*") as $filename) {
+foreach (glob((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . "/files/temp/gantt*") as $filename) {
 	if( @filemtime($filename) < (time() - 60 ))
    unlink($filename);
 }
@@ -821,7 +821,7 @@ $graph->Add($vline);
 
 if ($addLinksToGantt == 1){
 	$graph->SetMargin(5, 5, 15, 20);
-	$graph->Stroke( "./files/temp/gantt" . $filedate . ".png" );
+	$graph->Stroke( (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . "/files/temp/gantt" . $filedate . ".png" );
 	$ganttMap = $graph ->GetHTMLImageMap ("csimap" );
 	$ganttSource = "<img src=\"./files/temp/gantt". $filedate . ".png\" ISMAP USEMAP=\"#csimap\" border=0>";
 	$ganttMap = dPgetParam($_POST, 'ganttMap');

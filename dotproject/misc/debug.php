@@ -2,7 +2,7 @@
 if (! defined('DP_BASE_DIR')) {
 	die('You should not access this file directly.');
 }
-$debug_file = DP_BASE_DIR . '/files/debug.log';
+$debug_file = (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/debug.log';
 
 function writeDebug($s, $t='', $f='?', $l='?') {
 	GLOBAL $debug, $debug_file;

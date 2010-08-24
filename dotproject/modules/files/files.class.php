@@ -167,23 +167,23 @@ class CFile extends CDpObject {
 	// delete File from File System
 	function deleteFile() {
 		global $dPconfig;
-		return @unlink(DP_BASE_DIR . '/files/' . $this->file_project . '/' 
+		return @unlink((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/' . $this->file_project . '/' 
 		               . $this->file_real_filename);
 	}
 
 	// move the file if the affiliated project was changed
 	function moveFile($oldProj, $realname) {
 		global $AppUI, $dPconfig;
-		if (!is_dir(DP_BASE_DIR . '/files/' . $this->file_project)) {
-			$res = mkdir(DP_BASE_DIR . '/files/' . $this->file_project, 0777);
+		if (!is_dir((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/' . $this->file_project)) {
+			$res = mkdir((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/' . $this->file_project, 0777);
 			if (!$res) {
 				$AppUI->setMsg('Upload folder not setup to accept uploads' 
 				               . ' - change permission on files/ directory.', UI_MSG_ALLERT);
 				return false;
 			}
 		}
-		$res = rename(DP_BASE_DIR . '/files/' . $oldProj . '/' . $realname, 
-		              DP_BASE_DIR . '/files/' . $this->file_project . '/' . $realname);
+		$res = rename((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/' . $oldProj . '/' . $realname, 
+		              (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/' . $this->file_project . '/' . $realname);
 		
 		return $res;
 	}
@@ -191,8 +191,8 @@ class CFile extends CDpObject {
 	// duplicate a file into root
 	function duplicateFile($oldProj, $realname) {
 		global $AppUI, $dPconfig;
-		if (!is_dir(DP_BASE_DIR.'/files/0')) {
-			$res = mkdir(DP_BASE_DIR.'/files/0', 0777);
+		if (!is_dir((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/0')) {
+			$res = mkdir((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/0', 0777);
 			if (!$res) {
 				$AppUI->setMsg('Upload folder not setup to accept uploads.' 
 				               . ' Change permission on files/ directory.', UI_MSG_ALLERT);
@@ -200,8 +200,8 @@ class CFile extends CDpObject {
 			}
 		}
 		$dest_realname = uniqid(rand());
-		$res = copy(DP_BASE_DIR . '/files/' . $oldProj . '/' . $realname, 
-		            DP_BASE_DIR . '/files/0/' . $dest_realname);
+		$res = copy((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/' . $oldProj . '/' . $realname, 
+		            (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/0/' . $dest_realname);
 		
 		return ((!$res) ? false : $dest_realname);
 	}
@@ -210,14 +210,14 @@ class CFile extends CDpObject {
 	function moveTemp($upload) {
 		global $AppUI, $dPconfig;
 		// check that directories are created
-		if (!is_dir(DP_BASE_DIR.'/files')) {
-			$res = mkdir(DP_BASE_DIR.'/files', 0777);
+		if (!is_dir((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files')) {
+			$res = mkdir((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files', 0777);
 		    if (!$res) {
 				return false;
 			}
 		}
-		if (!is_dir(DP_BASE_DIR.'/files/'.$this->file_project)) {
-			$res = mkdir(DP_BASE_DIR.'/files/'.$this->file_project, 0777);
+		if (!is_dir((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/'.$this->file_project)) {
+			$res = mkdir((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/'.$this->file_project, 0777);
 			if (!$res) {
 				$AppUI->setMsg('Upload folder not setup to accept uploads' 
 				               . ' - change permission on files/ directory.', UI_MSG_ALLERT);
@@ -226,7 +226,7 @@ class CFile extends CDpObject {
 		}
 		
 		
-		$filepath = DP_BASE_DIR.'/files/'.$this->file_project.'/'.$this->file_real_filename;
+		$filepath = (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/'.$this->file_project.'/'.$this->file_real_filename;
 		// move it
 		$res = move_uploaded_file($upload['tmp_name'], $filepath);
 		return $res;
@@ -244,7 +244,7 @@ class CFile extends CDpObject {
 			return false;
 		}
 		// buffer the file
-		$filepath = (DP_BASE_DIR . '/files/' . $this->file_project . '/' 
+		$filepath = ((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/' . $this->file_project . '/' 
 		             . $this->file_real_filename);
 		$fp = fopen($filepath, 'rb');
 		$x = fread($fp, $this->file_size);

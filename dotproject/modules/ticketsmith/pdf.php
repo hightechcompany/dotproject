@@ -7,7 +7,7 @@ if (!defined('DP_BASE_DIR')) {
 require_once DP_BASE_DIR . '/modules/ticketsmith/config.inc.php';
 require_once $AppUI->getSystemClass('query');
 $font_dir = DP_BASE_DIR.'/lib/ezpdf/fonts';
-$temp_dir = DP_BASE_DIR.'/files/temp';
+$temp_dir = (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/temp';
 require($AppUI->getLibraryClass('ezpdf/class.ezpdf'));
 
 $type = dPgetParam($_GET, 'type', '');

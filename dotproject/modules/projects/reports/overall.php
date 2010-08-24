@@ -236,7 +236,7 @@ if ($log_pdf) {
 	// make the PDF file
 
 		$font_dir = DP_BASE_DIR.'/lib/ezpdf/fonts';
-		$temp_dir = DP_BASE_DIR.'/files/temp';
+		$temp_dir = (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/temp';
 		
 		require($AppUI->getLibraryClass('ezpdf/class.ezpdf'));
 
@@ -281,7 +281,7 @@ if ($log_pdf) {
 		if ($fp = fopen($temp_dir.'/temp'.$AppUI->user_id.'.pdf', 'wb')) {
 			fwrite($fp, $pdf->ezOutput());
 			fclose($fp);
-			echo '<a href="'.DP_BASE_URL.'/files/temp/temp'.$AppUI->user_id.'.pdf" target="pdf">';
+			echo '<a href="' . (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/temp/temp'.$AppUI->user_id.'.pdf" target="pdf">';
 			echo $AppUI->_("View PDF File");
 			echo "</a>";
 		} else {

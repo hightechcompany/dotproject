@@ -30,7 +30,14 @@ The full text of the GPL is in the COPYING file.
 
 //file viewer
 require_once 'base.php';
-require_once DP_BASE_DIR.'/includes/config.php';
+
+if (isset($_SERVER['DOTPROJECT_OVERLAY']) && is_file($_SERVER['DOTPROJECT_OVERLAY'] . '/config.php')) {
+        require_once $_SERVER['DOTPROJECT_OVERLAY'] . '/config.php';
+} else
+if (is_file(DP_BASE_DIR . '/includes/config.php')) {
+        require_once DP_BASE_DIR . '/includes/config.php';
+}
+
 require_once DP_BASE_DIR.'/includes/main_functions.php';
 require_once DP_BASE_DIR.'/classes/ui.class.php';
 require_once DP_BASE_DIR.'/includes/db_adodb.php';
@@ -142,7 +149,9 @@ if ($file_id) {
 	// END extra headers to resolve IE caching bug
 	*/
 
-	$fname = DP_BASE_DIR.'/files/'.$file['file_project'].'/'.$file['file_real_filename'];
+	$fname = (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) .
+		'/files/'.$file['file_project'] . '/' . $file['file_real_filename'];
+
 	if (! file_exists($fname)) {
 		$AppUI->setMsg('fileIdError', UI_MSG_ERROR);
 		$AppUI->redirect();
@@ -159,15 +168,16 @@ if ($file_id) {
      */ 
      ob_end_clean();
 	header('MIME-Version: 1.0');
-    header('Pragma: ');
-    header('Cache-Control: public');
+	header('Pragma: ');
+	header('Cache-Control: public');
 	header('Content-length: '.$file['file_size']);
 	header('Content-type: '.$file['file_type']);
 	header('Content-transfer-encoding: 8bit');
 	header('Content-disposition: attachment; filename="'.$file['file_name'].'"');
 
 	// read and output the file in chunks to bypass limiting settings in php.ini
-	$handle = fopen(DP_BASE_DIR . '/files/'.$file['file_project'].'/'.$file['file_real_filename'], 'rb');
+	$handle = fopen((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) .
+			'/files/'.$file['file_project'].'/'.$file['file_real_filename'], 'rb');
 	if ($handle)
 	{
 		while (!feof($handle)) {

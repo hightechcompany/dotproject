@@ -53,7 +53,7 @@ foreach ($messages as $row) {
 }
 
 $font_dir = DP_BASE_DIR.'/lib/ezpdf/fonts';
-$temp_dir = DP_BASE_DIR.'/files/temp';
+$temp_dir = (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/temp';
 require($AppUI->getLibraryClass('ezpdf/class.ezpdf'));
 
 $pdf = &new Cezpdf($paper='A4',$orientation='portrait');

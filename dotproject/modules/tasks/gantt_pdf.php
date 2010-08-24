@@ -13,7 +13,7 @@ if (!defined('DP_BASE_DIR')){
  *  First clear up the temp dir of pdf files for current user
  */
 //"./files/temp/gantt" . $filedate . ".png"
-foreach (glob('./files/temp/*' . $AppUI->user_first_name . '_' . $AppUI->user_last_name . '.pdf') as $gpdffilename) {
+foreach (glob((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/temp/*' . $AppUI->user_first_name . '_' . $AppUI->user_last_name . '.pdf') as $gpdffilename) {
 //   echo "$filename size " . filesize($filename) . "\n";
 //	if( @filemtime($filename) < (time() - 3600 ))
 //	echo '<pre> Filename: ' . $filename . ' size: ' . filesize($filename) . '</pre>';
@@ -1179,7 +1179,7 @@ if ($monospacefont) {
 	$vline->title->SetFont(FF_DEJAVU, FS_BOLD, (($printpdfhr == '1') ? 12 : 8)); //16); //8);
 }
 $graph->Add($vline);
-$filename = $root_dir."/files/temp/GanttPDF".$AppUI->user_id . sprintf( "%2u", $page) . ".png" ;
+$filename = (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . "/files/temp/GanttPDF".$AppUI->user_id . sprintf( "%2u", $page) . ".png" ;
 // Prepare Gantt image and store in $filename
 $graph->Stroke( $filename );
 $outpfiles[] = $filename ;
@@ -1200,7 +1200,7 @@ $show_gantt = 1;
 	$ganttfile = $outpfiles;
 	// Initialize PDF document
 		$font_dir = dPgetConfig( 'root_dir' )."/lib/ezpdf/fonts";
-		$temp_dir = dPgetConfig( 'root_dir' )."/files/temp";
+		$temp_dir = (dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . "/files/temp";
 		$base_url  = dPgetConfig( 'base_url' );
 		require( $AppUI->getLibraryClass( 'ezpdf/class.ezpdf' ) );
 		$pdf =& new Cezpdf($paper='A4',$orientation='landscape');
@@ -1385,7 +1385,7 @@ $show_gantt = 1;
 
 		$_POST['printpdf'] = '0';
 		$printpdf = '0';
-		foreach (glob('./files/temp/GanttPDF' . $AppUI->user_id .'*') as $gpdfpic) {
+		foreach (glob((dPgetConfig('overlay_dir') == '' ? DP_BASE_DIR : dPgetConfig('overlay_dir')) . '/files/temp/GanttPDF' . $AppUI->user_id .'*') as $gpdfpic) {
 		   unlink($gpdfpic);
 		}
 
