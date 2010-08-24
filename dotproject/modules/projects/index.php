@@ -31,7 +31,13 @@ if (isset($_GET['tab'])) {
 	$AppUI->setState('ProjIdxTab', intval(dPgetCleanParam($_GET, 'tab')));
 }
 
-$tab = $AppUI->getState('ProjIdxTab') !== NULL ? $AppUI->getState('ProjIdxTab') : 500;
+$std_tab = 500;
+if (is_array(dPgetSysVal('StandardProjectTab')) && count(dPgetSysVal('StandardProjectTab') > 0)) {
+  $std_tab_value = array_values(dPgetSysVal('StandardProjectTab'));
+  $std_tab = $std_tab_value[0];
+}
+
+$tab = $AppUI->getState('ProjIdxTab') !== NULL ? $AppUI->getState('ProjIdxTab') : $std_tab;
 $currentTabId = $tab;
 $active = intval(!$AppUI->getState('ProjIdxTab'));
 
@@ -173,14 +179,21 @@ foreach ($project_types as $status_id => $status_title) {
 										? $fixed_status[$status_title] : 'vw_idx_proposed');
 }
 
+if (!array_key_exists($tab, $project_types) && $tab >= 0 && $tab < 500) {
+  $tab = $std_tab;
+}
+
 // tabbed information boxes
 $tabBox = new CTabBox('?m=projects', DP_BASE_DIR . '/modules/projects/', $tab);
 
-$tabBox->add('vw_idx_proposed', $AppUI->_('All') . ' (' . $all_projects . ')' , true,  500);
 foreach ($project_types as $psk => $project_status) {
-		$tabBox->add($project_status_file[$psk], 
-					 (($project_status_tabs[$psk]) ? $project_status_tabs[$psk] : $AppUI->_($project_status)), true, $psk);
+  if (isset($project_types[$psk])) {
+    $tabBox->add($project_status_file[$psk], 
+		 (($project_status_tabs[$psk]) ? $project_status_tabs[$psk] : $AppUI->_($project_status)), true, $psk);
+  }
 }
+$tabBox->add('vw_idx_proposed', $AppUI->_('All') . ' (' . $all_projects . ')' , true,  500);
+
 $min_view = true;
 $tabBox->add('viewgantt', 'Gantt');
 $tabBox->show();
