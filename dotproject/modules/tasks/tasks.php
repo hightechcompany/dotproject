@@ -323,7 +323,7 @@ if (count($allowedChildrenTasks)) {
 // echo "<pre>$where</pre>";
 
 // Filter by company
-if (! $min_view && $company_id != 'all') {
+if (! $min_view && $company_id != '0') {
 	$join .= ' LEFT JOIN companies ON company_id = projects.project_company';
 	$where .= ' AND company_id = ' . intval($company_id);
 }

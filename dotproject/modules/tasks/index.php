@@ -29,11 +29,11 @@ if (isset($_POST['department'])) {
 }
 $department = (($AppUI->getState('ProjIdxDepartment') !== NULL) 
                ? $AppUI->getState('ProjIdxDepartment') 
-               : $company_prefix . '0');
+               : ($company_prefix . $AppUI->user_company));
 
 //if $department contains the $company_prefix string that it's requesting a company
 // and not a department.  So, clear the $department variable, and populate the $company_id variable.
-$company_id = 'all';
+$company_id = '0';
 if (!(mb_strpos($department, $company_prefix)===false)) {
 	$company_id = mb_substr($department,mb_strlen($company_prefix));
 	$AppUI->setState('ProjIdxCompany', $company_id);
@@ -103,7 +103,7 @@ $rows = $q->loadList();
 
 //display the select list
 $cBuffer = '<select name="department" onChange="document.companyFilter.submit()" class="text">';
-$cBuffer .= ('<option value="' . $company_prefix . 'all" style="font-weight:bold;">' . $AppUI->_('All') 
+$cBuffer .= ('<option value="' . $company_prefix . '0" style="font-weight:bold;">' . $AppUI->_('All') 
              . '</option>'."\n");
 $company = '';
 foreach ($rows as $row) {
