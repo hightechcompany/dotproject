@@ -108,7 +108,7 @@ echo arraySelect($projects, 'new_task_project',
 			<?php echo $AppUI->_('Description');?>:
 			<br />
 			<textarea name="task_description" class="textarea" cols="60" rows="10" wrap="virtual"><?php 
-echo @$obj->task_description;?></textarea>
+  echo dPformSafe(@$obj->task_description);?></textarea>
 		</td></tr></table><br />
 		<?php
 require_once($AppUI->getSystemClass('CustomFields'));

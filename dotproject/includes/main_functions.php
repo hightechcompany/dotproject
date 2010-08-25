@@ -54,7 +54,7 @@ function arraySelect(&$arr, $select_name, $select_attribs, $selected, $translate
 		}
 		$s .= ("\n\t" . '<option value="' . $AppUI->___($k) . '"'
 		       . (($k == $selected && !$did_selected) ? ' selected="selected"' : '') . ">"
-		       . $AppUI->___($v) . '</option>');
+		       . (($translate) ? $v : $AppUI->___($v)) . '</option>');
 		if ($k == $selected) {
 			$did_selected = 1;
 		}
@@ -544,7 +544,6 @@ function dPformSafe($txt, $flag_bits = 0) {
 
 			if (!($isURI)) {
 				$value = (($isJSVars) ? $AppUI->___($value, UI_OUTPUT_JS) : $value);
-				$value = ((!($deslash)) ? htmlspecialchars($value) : $AppUI->___($value));
 			}
 
 			if (is_object($txt)) {
@@ -560,7 +559,6 @@ function dPformSafe($txt, $flag_bits = 0) {
 
 		if (!($isURI)) {
 			$txt = (($isJSVars) ? $AppUI->___($txt, UI_OUTPUT_JS) : $AppUI->___($txt));
-			$txt = ((!($deslash)) ? htmlspecialchars($txt) : $AppUI->___($txt));
 		}
 
 		/*
