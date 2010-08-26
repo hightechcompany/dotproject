@@ -139,7 +139,7 @@ echo htmlspecialchars($row['company_description'], ENT_QUOTES); ?>">
 	<td width="100%">
 		<a href="?m=projects&amp;a=view&amp;project_id=<?php 
 echo htmlspecialchars($row['project_id']); ?>" title="<?php
-echo str_replace(array("\r\n", "\n", "\r"), '<br />', addslashes($row['project_description'])); ?>" class="tips">
+echo str_replace(array("\r\n", "\n", "\r"), '<br />', htmlspecialchars($row['project_description'])); ?>" class="tips">
 		<?php echo (htmlspecialchars($row['project_name'], ENT_QUOTES)); ?>
 		</a>
 	</td>

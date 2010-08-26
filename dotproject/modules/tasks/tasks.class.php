@@ -2427,7 +2427,7 @@ function showtask(&$a, $level=0, $is_opened = true, $today_view = false, $hideOp
 	$alt = str_replace("\n", ' ', $alt);
 	*/
 	$alt = ((!empty($a['task_description']))
-			? ('title="' . str_replace(array("\r\n", "\n", "\r"), '<br />', addslashes($a['task_description'])) . '" class="tips"')
+			? ('title="' . str_replace(array("\r\n", "\n", "\r"), '<br />', htmlspecialchars(($a['task_description']))) . '" class="tips"')
 			: ' ');
 	
 	if ($a['task_milestone'] > 0) {
