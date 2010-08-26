@@ -989,4 +989,16 @@ function safe_utf8_decode($string)
 		return $string;
 	}
 }
+
+/**
+ * that version of urlencode could handle full urls in the right way
+ */
+function fullurl_urlencode($url)
+{
+  $url = urlencode($url);
+  $url = str_replace("%2F", "/", $url);
+  $url = str_replace("%3A", ":", $url);
+  return $url;
+}
+
 ?>

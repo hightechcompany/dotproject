@@ -99,7 +99,7 @@ foreach ($logs as $row) {
 	$s .= '<td align="center" valign="middle">' . $reference_image . '</td>';
 	$s .= '<td width="30%" style="'.$style.'">' . htmlspecialchars(@$row['task_log_name']) . '</td>';
 	$s .= ((!(empty($row['task_log_related_url']))) 
-	       ? ('<td><a href="'.urlencode(@$row['task_log_related_url']) . '" title="' 
+	       ? ('<td><a href="'.fullurl_urlencode(@$row['task_log_related_url']) . '" title="' 
 	          . htmlspecialchars(@$row['task_log_related_url']).'">' . $AppUI->_('URL') . '</a></td>') 
 	       : '<td></td>');
 	$s .= '<td width="100">' . $row['user_username'] . '</td>';

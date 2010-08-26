@@ -297,12 +297,12 @@ echo @$obj->project_target_budget; ?></td>
 		</tr>
 		<tr>
 			<td align="right" nowrap="nowrap"><?php echo $AppUI->_('URL'); ?>:</td>
-			<td class="hilite"><a href="<?php echo urlencode(@$obj->project_url); ?>" target="_new"><?php 
+			<td class="hilite"><a href="<?php echo fullurl_urlencode(@$obj->project_url); ?>" target="_new"><?php 
 echo htmlspecialchars(@$obj->project_url); ?></A></td>
 		</tr>
 		<tr>
 			<td align="right" nowrap="nowrap"><?php echo $AppUI->_('Staging URL'); ?>:</td>
-			<td class="hilite"><a href="<?php echo urlencode(@$obj->project_demo_url); ?>" target="_new"><?php 
+			<td class="hilite"><a href="<?php echo fullurl_urlencode(@$obj->project_demo_url); ?>" target="_new"><?php 
 echo htmlspecialchars(@$obj->project_demo_url); ?></a></td>
 		</tr>
 		<tr>
