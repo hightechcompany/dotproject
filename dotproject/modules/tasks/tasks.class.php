@@ -1173,6 +1173,7 @@ class CTask extends CDpObject
 		
 		$recipient_list = '';
 		foreach ($mail_recipients as $email => $name) {
+			$email = trim($email);
 			if ($mail->ValidEmail($email)) {
 				$mail->To($email);
 				$recipient_list .= $email . ' (' . $name . ")\n";
