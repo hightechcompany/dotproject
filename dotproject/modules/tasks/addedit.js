@@ -560,6 +560,9 @@ function fd_seed()
 
 // Sub-form specific functions.
 function checkDates(form) {
+	if (document.getElementById('task_dynamic').checked)
+		return true;
+
 	if (can_edit_time_information && check_task_dates) {
 		if (!form.task_start_date.value) {
 			alert(task_start_msg);
