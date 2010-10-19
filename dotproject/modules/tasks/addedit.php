@@ -183,7 +183,7 @@ if ($department_selection_list != '') {
 
 function getDepartmentSelectionList($company_id, $checked_array = array(), 
                                     $dept_parent=0, $spaces=0) {
-	global $departments_count;
+	global $departments_count, $AppUI;
 	$q = new DBQuery();
 	$parsed = '';
 
@@ -198,6 +198,10 @@ function getDepartmentSelectionList($company_id, $checked_array = array(),
 	$depts_list = db_loadHashList($sql, 'dept_id');
 	$q->clear();
 	
+	if (count($checked_array) == 0) {
+		$checked_array[0] = $AppUI->user_department;
+	}
+
 	foreach ($depts_list as $dept_id => $dept_info) {
 		if (mb_strlen($dept_info['dept_name']) > 30) {
 			$dept_info['dept_name'] = (mb_substr($dept_info['dept_name'], 0, 28) . '...');
