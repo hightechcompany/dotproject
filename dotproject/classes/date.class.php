@@ -55,11 +55,17 @@ class CDate extends Date {
 		return $output;
 	}
 
-	function after($when)
+	function after($date)
 	{
-		if (!is_object($when)) {
-			$when = new CDate($when);
+		if (!($date instanceof parent)) {
+			$when = new CDate($date);
 		}
+		else {
+			// copy the Date object to prevent changes propagation
+			$when = new CDate();
+			$when->copy($date);
+		}
+
 		return parent::after($when);
 	}
 
